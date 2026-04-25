@@ -1,0 +1,14 @@
+add_newline = true
+
+format = "$directory$git_branch$git_status$nodejs$python$nix_shell$cmd_duration$line_break$character"
+
+[directory]
+truncation_length = 3
+truncate_to_repo = true
+
+[git_status]
+stashed = "*"
+
+[nix_shell]
+format = "via [$symbol$state( ($name))]($style) "
+symbol = "❄️ "
