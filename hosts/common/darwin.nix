@@ -21,6 +21,8 @@
       trusted-users = [ "root" "@admin" username ];
       warn-dirty = false;
     };
+    # Disabled below by commenting because Nix is managed by Determinate Nix (nix.enable = false),
+    # so NixOS options like `nix.gc` and `nix.optimise` will result in error as they reqire nix and we are using Determinate Nix.
     # optimise.automatic = true;
     gc = {
       # automatic = true;
@@ -30,20 +32,52 @@
   };
 
   programs.zsh.enable = true;
+  # programs.fish.enable = true;
   system.primaryUser = username;
 
   users.users.${username} = {
     home = "/Users/${username}";
+    # shell = pkgs.fish;
     shell = pkgs.zsh;
   };
 
   environment.systemPackages = with pkgs; [
     git
-    gnupg
-    jq
-    nixfmt-rfc-style
     vim
+    curl
     wget
+    jq
+    gnupg
+    btop
+    coreutils
+    difftastic
+    dua
+    duf
+    entr
+    fastfetch
+    fd
+    ffmpeg
+    figurine
+    gnused
+    iperf3
+    just
+    mc
+    mosh
+    nmap
+    ripgrep
+    smartmontools
+    tree
+    unzip
+    zoxide
+    bat
+    eza
+    lsof
+    tldr
+    atuin
+    pass
+    delta
+    chafa
+    nixfmt-rfc-style
   ];
 
   networking.computerName = lib.mkDefault "${username}-mac";

@@ -16,12 +16,16 @@
   };
 
   home.packages = with pkgs; [
-    bat
-    eza
-    fd
     fzf
-    ripgrep
     starship
+    brave
+    slack
+    # orbstack
+    tableplus
+    raycast
+    obsidian
+    meetingbar
+    opencode
   ];
 
   programs.home-manager.enable = true;
@@ -35,6 +39,13 @@
       eval "$(starship init zsh)"
     '';
   };
+
+  # programs.fish = {
+    # enable = true;
+    # interactiveShellInit = ''
+      # starship init fish | source
+    # '';
+  # };
 
   programs.git = {
     enable = true;

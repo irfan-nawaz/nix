@@ -16,7 +16,7 @@ A reproducible macOS setup built with `nix-darwin`, `home-manager`, `nix-homebre
 5. Switch when build passes:
 
    ```bash
-   darwin-rebuild switch --flake .#irfan-personal
+   sudo darwin-rebuild switch --flake .#irfan-personal
    darwin-rebuild switch --flake ~/nix#irfan-personal
    ```
 

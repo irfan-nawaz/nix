@@ -28,8 +28,6 @@
     ];
 
     casks = [
-      "ghostty"
-      "raycast"
     ];
 
     masApps = { };
