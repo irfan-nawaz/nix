@@ -58,6 +58,7 @@
     fd
     ffmpeg
     figurine
+    fzf
     gnused
     iperf3
     just

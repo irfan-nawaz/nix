@@ -16,16 +16,22 @@
   };
 
   home.packages = with pkgs; [
-    fzf
     starship
     brave
     slack
     # orbstack
+    docker
+    docker-compose
     tableplus
     raycast
     obsidian
     meetingbar
     opencode
+    claude-code
+    antigravity
+    postman
+    notion-app
+    vscode
   ];
 
   programs.home-manager.enable = true;
@@ -51,7 +57,7 @@
     enable = true;
     settings = {
       init.defaultBranch = "main";
-      pull.rebase = false;
+      # pull.rebase = false;
       push.autoSetupRemote = true;
     };
   };
@@ -67,6 +73,9 @@
 
   programs.starship = {
     enable = true;
+    enableZshIntegration = true;
     settings = lib.mkDefault { };
   };
+
+    #services
 }
