@@ -7,13 +7,13 @@
     hostPlatform = "aarch64-darwin";
   };
 
-  nix-homebrew = {
-    enable = true;
-    enableRosetta = true;
-    user = username;
-    autoMigrate = true;
-    mutableTaps = true;
-  };
+  # nix-homebrew = {
+    # enable = true;
+    # enableRosetta = true;
+    # user = username;
+    # autoMigrate = true;
+    # mutableTaps = true;
+  # };
 
   homebrew = {
     enable = true;
@@ -28,8 +28,12 @@
     ];
 
     casks = [
+
     ];
 
-    masApps = { };
+    masApps = {
+
+    };
+
   };
 }

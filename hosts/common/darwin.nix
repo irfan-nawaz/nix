@@ -78,6 +78,16 @@
     pass
     delta
     chafa
+    navi
+    intelli-shell
+    pik
+    rustscan
+    sampler
+    smassh
+    
+    # services
+    caffeine
+    flameshot
     nixfmt-rfc-style
   ];
 

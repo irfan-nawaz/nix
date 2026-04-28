@@ -32,6 +32,7 @@
     postman
     notion-app
     vscode
+    ghostty-bin
   ];
 
   programs.home-manager.enable = true;
@@ -78,4 +79,28 @@
   };
 
     #services
+  services.colima = {
+  enable = true;
+
+  profiles.default = {
+    isService = true;
+    isActive = true;
+    setDockerHost = false;
+
+    settings = {
+      cpu = 4;
+      memory = 8;
+      disk = 100;
+
+      vmType = "vz";
+      mountType = "virtiofs";
+      mountInotify = true;
+
+      network.address = true;
+      forwardAgent = true;
+
+      runtime = "docker";
+    };
+  };
+};
 }
