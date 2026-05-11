@@ -19,7 +19,7 @@ inputs.darwin.lib.darwinSystem {
       ./../hosts/darwin/${hostname}/default.nix
 
       # Home Manager
-      inputs.home-manager.darwinModules.home-manager
+      inputs.home-manager.darwinModules.home-manager 
       {
         home-manager.useGlobalPkgs = true;
         home-manager.useUserPackages = true;

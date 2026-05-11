@@ -1,0 +1,88 @@
+    #programs
+    # git
+    # fd
+    # jq
+    # jqp
+    # bat
+    # fzf
+    # eza
+    # ripgrep
+    # btop
+    # fastfetch
+    # aerospace
+    # dbeaver-bin
+    # freetube
+    # brave
+    # difftastic
+    # atuin
+    # aliae
+    # broot
+    # clock-rs
+    # hstr
+    # hwatch
+    # infat
+    # intelli-shell
+    # joplin-desktop
+    # less
+    # man
+    # mc
+    # navi
+    # numbat
+    # pet
+    # sherlock
+    # sioyek
+    # sketchybar
+    # superfile
+    # tealdeer
+    # television
+    # trippy
+    # ttyper
+    # yt-dlp
+
+
+
+    # ghostty
+    # nh
+    # noti
+    # todoman
+    # wallust
+    # watson
+
+    # algia
+    # alistral
+    # andcli
+    # animdl
+    # anki
+    # anvil-editor
+    # aria2
+    # asciinema
+    # autojump
+    # browserpass
+    # carapace
+    # cava
+    # cmus
+    # gallery-dl
+    # powerline-go
+    # script-directory
+
+    
+    # need to find these tools in cli
+    # music
+    # file manager
+    # password manager
+    # download manager
+    # torrent manager
+    # existing tools upgrage manager
+    # browser
+    # email
+    # chat
+    # notes
+    # shell history
+    # calander
+    # bibliography
+    # calande
+    # clousd stroage sync
+    # chat
+
+
+    # services

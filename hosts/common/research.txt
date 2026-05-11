@@ -1,0 +1,127 @@
+for music we need 
+1. "listenbrainz" like tool for stroing and syncing our musinc data 
+2. a music plauer whcich can actually integrate with listenbrainz like "mpd, mpc and ncmpcpp, inori, mpv, ncspot, rmpc, spotify-player, mpvc"
+3. cli interation for for data alaytice like "alistral"
+more tools related
+- beets
+- cmus
+https://gist.github.com/sdushantha/fd0b4f7d69b814317bc33da3a57fdf49
+
+
+for email
+we have one base tool arec
+and then later we can add tools like  "afew" and "notmuch" for local storgae of email and search features in the local email data
+himalaya - CLI to manage emails
+lieer
+isync
+meli
+msmtp
+mu and Maildirs
+mujmap and JMAP and notmuch
+neomutt
+offlineimap
+
+for VPN
+mullvad-vpn
+tailscale
+
+
+for totp
+andcli, andTop, Aegis
+we need an app of topt and them some secret and then expoert the secret form that app and configure our cli so that the cli gets synceda nd fenreated topts based on the secret form the app
+
+for image viewing
+feh
+imv
+pqiv
+
+password manager
+keepassxc
+keychain
+
+for calander
+khal + vdirsyncer for sync with google but not auto sync sshould sync manually or using crom jobs
+calcurse
+CalDAV CLI wrappers
+pimsync
+qcal - CalDAV 
+todoman
+vdirsyncer
+
+for contacts
+khard is a terminal-based (console) contact manager for Linux/Unix systems.
+CardDAV is a network protocol (standard) used to store and sync contacts online.
+pimsync
+vdirsyncer
+Think of it like:
+IMAP = emails sync
+CalDAV = calendars sync
+CardDAV = contacts sync
+
+for chat annd messaging
+Signal messager - gurk, gurk-rs
+IRC - Halloy, hexchat, irssi, tiny
+matrix - iamb, nheko
+pidgin
+
+
+for sql clients
+lazysql
+
+pager tools for viving large texts and undertand differnce with paging tool vs viewing tools like bat, cat etc ...
+also understand the preview what is this preview exactly (file previewer designed for Ranger,) pistol & piston-cli
+less, lesspipe
+ov
+more
+most
+
+nix ecosystem packages;
+nh
+nix-index
+nix-init
+nix-search-tv
+nix-your-shell
+
+ssh and password manaement
+opkssh
+password-store
+pass
+
+research on radio players for cli
+pyradio
+radio-active
+radio-cli
+
+research torrent cli tools
+rtorrent
+
+research terminal screenshot
+satty
+
+
+research on browser for cli
+
+explore later:
+autojump
+bashmount
+borgmatic
+browserpass
+desktoppr
+diff-highlight
+diff-so-fancy
+difftastic
+eww
+git-worktree-switcher
+lazyworktree
+ledger
+mergiraf
+neovide
+topgrade
+wallust
+watson
+
+
+File Managers - ranger lf nnn rovr sfm vifm 
+Editors - helix micro kakoune vis zee
+Messaging / Chat Clients - irssi weechat mastui toot gomuks iamb zulip-terminal slack-term
+Web / Browsers / Feeds - lynx w3m newsboat bombadillo browsh carbonyl elinks hackernews-tui rttt searxngr surge podliner twterm

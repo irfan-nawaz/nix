@@ -7,11 +7,15 @@
   home.username = "irfan-personal";
   home.homeDirectory = "/Users/irfan-personal";
 
-  xdg.configFile."starship.toml".source = ../starship/starship.toml;
-  xdg.configFile."ghostty/config".source = ../ghostty/config;
-
   # Make the path available without exposing secret content in the store.
   home.sessionVariables.GITHUB_TOKEN_FILE = "/run/secrets/github_token";
+
+  xdg.configFile = {
+    "starship.toml".source = ../starship/starship.toml;
+    "ghostty/config".source = ../ghostty/config;
+    # "atuin/config.toml".source = ../atuin/config.toml;
+    # "bat/config".source = ../bat/config;
+  };
 
   programs.zsh.shellAliases = {
     ll = "eza -la";
@@ -63,8 +67,6 @@
 
   programs.bat.config.theme = "Nord";
 
-  programs.zoxide.enable = true;
-
   programs.git = {
     enable = true;
     signing.format = null;
@@ -72,7 +74,7 @@
     # fallback (just in case)
     settings = {
       user = {
-        name = "irfan.nawaz";
+        name = "irfan-ga";
         email = "irfan.nawaz@geekyants.com";
       };
 
@@ -81,19 +83,23 @@
       merge.conflictStyle = "diff3";
     };
 
-    includes = [
-      # 🏢 GitLab Work
+ includes = [
+      # ==========================================
+      # GitHub PERSONAL
+      # ==========================================
       {
-        condition = "hasconfig:remote.*.url:git.geekyants.com:";
+        condition = "hasconfig:remote.*.url:git@github-personal:";
         contents = {
           user = {
-            name = "irfan.nawaz";
-            email = "irfan.nawaz@geekyants.com";
+            name = "irfan-nawaz";
+            email = "shaikmd.irfannawaz2020@gmail.com";
           };
         };
       }
 
-      # 🐙 GitHub Work
+      # ==========================================
+      # GitHub WORK
+      # ==========================================
       {
         condition = "hasconfig:remote.*.url:git@github.com:";
         contents = {
@@ -104,54 +110,87 @@
         };
       }
 
-      # 🌍 GitHub Personal
+      # ==========================================
+      # GitLab GeekyAnts
+      # ==========================================
       {
-        condition = "hasconfig:remote.*.url:git@github-personal:";
+        condition = "hasconfig:remote.*.url:git@git.geekyants.com:";
         contents = {
           user = {
-            name = "Your Personal Name";
-            email = "your.personal@email.com";
+            name = "irfan.nawaz";
+            email = "irfan.nawaz@geekyants.com";
+          };
+        };
+      }
+
+      # ==========================================
+      # GitLab TZero
+      # ==========================================
+      {
+        condition = "hasconfig:remote.*.url:git@gitlab.com:";
+        contents = {
+          user = {
+            name = "inawaz.ctr";
+            email = "inawaz.ctr@tzero.com";
           };
         };
       }
     ];
   };
 
-programs.ssh = {
-  enable = true;
-  enableDefaultConfig = false;
+  programs.ssh = {
+    enable = true;
+    enableDefaultConfig = false;
 
-  matchBlocks = {
-    # ✅ Defaults
-    "*" = {
-      addKeysToAgent = "yes";
-      identitiesOnly = true;
-      serverAliveInterval = 60;
-      serverAliveCountMax = 3;
-    };
+    matchBlocks = {
 
-    # 🐙 GitHub WORK (via 443 - corp safe)
-    "github.com" = {
-      hostname = "ssh.github.com";
-      port = 443;
-      user = "git";
-      identityFile = "~/.ssh/id_ed25519_github_work";
-    };
+      # ==========================================
+      # Global defaults
+      # ==========================================
+      "*" = {
+        addKeysToAgent = "yes";
+        identitiesOnly = true;
+        serverAliveInterval = 60;
+        serverAliveCountMax = 3;
+      };
 
-    # 🐙 GitHub PERSONAL
-    "github-personal" = {
-      hostname = "ssh.github.com";
-      port = 443;
-      user = "git";
-      identityFile = "~/.ssh/id_ed25519_github_personal";
-    };
+      # ==========================================
+      # GitHub WORK (default github.com)
+      # ==========================================
+      "github.com" = {
+        hostname = "ssh.github.com";
+        port = 443;
+        user = "git";
+        identityFile = "~/.ssh/id_ed25519_github_geekyants";
+      };
 
-    # 🏢 Company GitLab (self-hosted)
-    "git.geekyants.com" = {
-      hostname = "git.geekyants.com";
-      user = "git";
-      identityFile = "~/.ssh/id_ed25519_gitlab";
+      # ==========================================
+      # GitHub PERSONAL (alias only)
+      # ==========================================
+      "github-personal" = {
+        hostname = "ssh.github.com";
+        port = 443;
+        user = "git";
+        identityFile = "~/.ssh/id_ed25519_github_personal";
+      };
+
+      # ==========================================
+      # GitLab GeekyAnts
+      # ==========================================
+      "git.geekyants.com" = {
+        hostname = "git.geekyants.com";
+        user = "git";
+        identityFile = "~/.ssh/id_ed25519_gitlab_geekyants";
+      };
+
+      # ==========================================
+      # GitLab TZero (default gitlab.com)
+      # ==========================================
+      "gitlab.com" = {
+        hostname = "gitlab.com";
+        user = "git";
+        identityFile = "~/.ssh/id_ed25519_gitlab_tzero";
+      };
     };
   };
-};
 }
