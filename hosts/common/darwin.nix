@@ -3,7 +3,7 @@
 
   system = {
     primaryUser = username;
-    stateVersion = 5;
+    stateVersion = 6;
     defaults = {
      dock = {
       autohide = true;
@@ -83,17 +83,16 @@
   environment.systemPackages = with pkgs; [
 
     # dashboards
-    macmon # System performance - Sudoless performance monitoring for Apple Silicon processors
-    zenith # System performance - dashboard with zoom-able charts, network, and disk usage (top alternate)
+    macmon # System performance - Sudoless performance monitoring for Apple Silicon processors - T.W.
+    zenith # System performance - dashboard with zoom-able charts, network, and disk usage (top alternate) - T.W.
     # btop # System performance - simple and fast being managed by home manager 
     # glances # System performance
-    wtfutil # Personal information dashboard for your terminal
+    wtfutil # Personal information dashboard for your terminal - T.W.
 
     # Core system utilities
-    vim # This is to replace the natively installed vim which has some restrictions.
-    curl # Cli for for transferring files with URL syntax over various protocols (FTP, HTTPS, IMAP).
-    wget # Cli for retrieving files using HTTP, HTTPS, and FTP.
-    tree # Command to produce a depth indented directory listing.
+    vim # This is to replace the natively installed vim which has some restrictions. - T.W.
+    curl # Cli for for transferring files with URL syntax over various protocols (FTP, HTTPS, IMAP). - T.W.
+    wget # Cli for retrieving files using HTTP, HTTPS, and FTP.  - T.W.
     gnupg # GNU Privacy Guard, a GPL OpenPGP implementation.
     gawk # GNU implementation of the Awk programming language
     gnused # Sed (stream editor) is a non-interactive command-line text editor.
@@ -105,6 +104,27 @@
     lsof # Command to list open files
     coreutils # GNU Core Utilities (group of commands like ls, rm, mv etc...)
     hyperfine # Command-line benchmarking tool
+
+    # file managers
+    # xplr
+    # superfile
+    # yazi
+    # ranger
+    # fzf # this is minimal and quick and being alredy managed via home manager
+
+    # tree / navigation tools
+    tree # Command to produce a depth indented directory listing.
+    tre-command # Command to produce a depth indented directory listing.
+    broot # Command to produce a depth indented directory listing.
+
+
+    # Disk usage
+    gdu # TUI
+    dust # CLI for quick glance
+
+    # CLI Personal Knowledge Management (CLI-PKM)
+    # zk
+    nb
 
     # Networking / diagnostics
     inetutils # Collection of common network programs.
@@ -145,31 +165,12 @@
     hours # Command-line time tracking tool
     timewarrior # Command-line time tracker
     tasktimer # A dead simple TUI task timer
-    tz
+    tz # timezone
     basilk # TUI to manage your tasks with minimal kanban logic
     taskbook # CLI tool to organize tasks & notes to boards
     taskwarrior3 # Flexible command-line tool to manage TODO lists
     taskwarrior-tui # Terminal user interface for taskwarrior
     dijo # CLI digital habit tracker
-
-    # file managers
-    # xplr
-    # superfile
-    # yazi
-    # ranger
-    # fzf # this is minimal and quick and being alredy managed via home manager
-
-    # tree / navigation tools
-    tre-command
-    broot
-
-    # Disk usage
-    gdu # TUI
-    dust # CLI for quick glance
-
-    # CLI Personal Knowledge Management (CLI-PKM)
-    # zk
-    nb
 
     # system observability and logging
     lnav # Commandline logfile navigator
@@ -252,7 +253,7 @@
     hadolint
     ctop
 
-    # Image Registry / Security
+    # Image Registry / Security ---------------------------------------------------------------> check configs from here.
     trivy
     syft
     semgrep
@@ -311,7 +312,7 @@
     pik
     caffeine
     flameshot
-    nixfmt-rfc-style
+    nixfmt
 
     # terminal / UI / interactive layer
     television
@@ -371,10 +372,6 @@
     #terminal record
     asciinema
     t-rec
-
-    #ai
-    yai
-    pi-coding-agent
 
     #journal
     tui-journal

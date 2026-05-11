@@ -18,7 +18,7 @@
   };
 
   programs.zsh.shellAliases = {
-    ll = "eza -la";
+    # ll = "eza -la";
     rebuild = "darwin-rebuild switch --flake ~/nix#irfan-personal";
     testbuild = "darwin-rebuild build --flake ~/nix#irfan-personal";
   };
