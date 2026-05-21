@@ -34,8 +34,6 @@
     # orbstack
   ];
 
-  programs.home-manager.enable = true;
-
   programs.zsh = {
     enable = true;
     enableCompletion = true;
@@ -344,9 +342,6 @@
   programs.fd.enable = true;
   programs.jq.enable = true;
   programs.jqp.enable = true;
-  programs.bat.enable = true;
-  programs.fzf.enable = true;
-  programs.eza.enable = true;
   programs.ripgrep.enable = true;
   programs.btop.enable = true;
   programs.fastfetch.enable = true;
