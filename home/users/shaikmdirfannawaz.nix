@@ -4,8 +4,8 @@
     ../common/default.nix
   ];
 
-  home.username = "irfan-personal";
-  home.homeDirectory = "/Users/irfan-personal";
+  home.username = "shaikmdirfannawaz";
+  home.homeDirectory = "/Users/shaikmdirfannawaz";
 
   # Make the path available without exposing secret content in the store.
   home.sessionVariables.GITHUB_TOKEN_FILE = "/run/secrets/github_token";

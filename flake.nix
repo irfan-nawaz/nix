@@ -31,6 +31,11 @@
     in
     {
       darwinConfigurations = {
+        shaikmdirfannawaz = lib.mkDarwin {
+          system = "aarch64-darwin";
+          hostname = "shaikmdirfannawaz";
+          username = "shaikmdirfannawaz";
+        };
         irfan-personal = lib.mkDarwin {
           system = "aarch64-darwin";
           hostname = "irfan-personal";
@@ -57,16 +62,14 @@
         };
       };
 
-      formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.nixfmt);
+      formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.nixfmt-rfc-style);
 
-      checks = forAllSystems (system:
-        let
-          pkgs = nixpkgs.legacyPackages.${system};
-        in
-        {
-          flake-eval = pkgs.runCommand "flake-eval" { } ''
-            touch $out
-          '';
-        });
+      checks = forAllSystems (
+        system:
+        nixpkgs.lib.optionalAttrs (system == "aarch64-darwin") {
+          shaikmdirfannawaz = self.darwinConfigurations.shaikmdirfannawaz.system;
+          irfan-personal = self.darwinConfigurations.irfan-personal.system;
+        }
+      );
     };
 }

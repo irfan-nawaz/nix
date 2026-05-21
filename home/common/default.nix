@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, hostname, ... }:
 {
   home.stateVersion = "26.05";
 
@@ -195,8 +195,8 @@
         nf = "nix flake";
         nfu = "nix flake update";
 
-        nds = "darwin-rebuild switch --flake ~/nix#irfan-personal";
-        ndb = "darwin-rebuild build --flake ~/nix#irfan-personal";
+        nds = "sudo darwin-rebuild switch --flake ~/nix#${hostname}";
+        ndb = "darwin-rebuild build --flake ~/nix#${hostname}";
 
         hms = "home-manager switch";
         hmb = "home-manager build";

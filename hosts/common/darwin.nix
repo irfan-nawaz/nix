@@ -1,6 +1,20 @@
 { config, pkgs, lib, username, ... }:
 {
 
+  nixpkgs.config.allowUnfree = true;
+
+  homebrew = {
+    enable = true;
+    onActivation = {
+      autoUpdate = false;
+      cleanup = "zap";
+      upgrade = false;
+    };
+    brews = [ "mas" ];
+    casks = [ ];
+    masApps = { };
+  };
+
   system = {
     primaryUser = username;
     stateVersion = 6;
@@ -22,12 +36,6 @@
     # shell = pkgs.fish;
     shell = pkgs.zsh;
   };
-
-  nixpkgs.overlays = [
-    (final: prev: {
-      # Temporary compatibility alias for nix-homebrew on current nixpkgs.
-    })
-  ];
 
   sops = {
     defaultSopsFile = ./../../secrets/secrets.yaml;
