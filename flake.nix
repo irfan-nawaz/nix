@@ -96,7 +96,7 @@
               age
               just
               nh
-              nixfmt-rfc-style
+              nixfmt
               statix
               deadnix
               git
