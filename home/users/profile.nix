@@ -48,7 +48,6 @@
 
   programs.gpg.enable = true;
   programs.lf.enable = true;
-  programs.nix-index.enable = true;
 
   programs.bat = {
     enable = true;
@@ -57,7 +56,11 @@
 
   programs.git = {
     enable = true;
-    signing.format = null;
+    signing = {
+      format = "ssh";
+      signByDefault = true;
+      key = "~/.ssh/id_ed25519_github_geekyants.pub";
+    };
 
     settings = {
       user = {
@@ -67,6 +70,7 @@
       init.defaultBranch = "main";
       pull.rebase = true;
       merge.conflictStyle = "diff3";
+      gpg.ssh.allowedSignersFile = "~/.config/git/allowed_signers";
     };
 
     includes = [

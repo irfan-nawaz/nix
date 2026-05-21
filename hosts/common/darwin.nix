@@ -1,4 +1,9 @@
-{ pkgs, lib, username, ... }:
+{
+  pkgs,
+  lib,
+  username,
+  ...
+}:
 {
   imports = [
     ../../modules/packages/base.nix
@@ -71,11 +76,39 @@
   };
 
   # Nix is managed by Determinate Nix here, so `nix.enable = false` keeps
-  # nix-darwin from fighting it. As a side effect, every `nix.*` option below
-  # is inert -- substituters, trusted-users, and GC must be configured via
-  # Determinate's /etc/nix/nix.custom.conf and a launchd agent respectively
-  # (see Phase 4).
+  # nix-darwin from fighting it. As a side effect, every `nix.*` option is
+  # inert -- substituters, trusted-users, and experimental-features must be
+  # configured via Determinate's /etc/nix/nix.custom.conf (see
+  # docs/nix.custom.conf.example).
   nix.enable = false;
+
+  # nix-darwin tooling that improves rebuild ergonomics and shell completion.
+  environment.systemPackages = with pkgs; [
+    nh
+    nix-output-monitor
+    nvd
+  ];
+  programs.nix-index.enable = true;
+
+  fonts.packages = with pkgs; [
+    nerd-fonts.jetbrains-mono
+    nerd-fonts.fira-code
+    nerd-fonts.symbols-only
+  ];
+
+  # Weekly garbage collection. Determinate Nix ignores nix-darwin's nix.gc
+  # block, so we drive nix-collect-garbage with a launchd agent instead.
+  launchd.user.agents.nix-gc = {
+    command = "/run/current-system/sw/bin/nix-collect-garbage --delete-older-than 14d";
+    serviceConfig.StartCalendarInterval = [
+      {
+        Hour = 3;
+        Minute = 15;
+        Weekday = 0;
+      }
+    ];
+    serviceConfig.RunAtLoad = false;
+  };
 
   networking.computerName = lib.mkDefault "${username}-mac";
 
