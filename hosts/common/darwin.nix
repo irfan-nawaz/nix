@@ -15,9 +15,22 @@
     ../../modules/packages/cloud.nix
     ../../modules/packages/dev.nix
     ../../modules/packages/productivity.nix
+    ../../modules/packages/personal.nix
+    ../../modules/packages/comms.nix
   ];
 
   nixpkgs.config.allowUnfree = true;
+
+  # wrtag's test suite includes a cover-art filename check that assumes
+  # a case-sensitive filesystem; macOS (APFS default) is case-insensitive
+  # so the test fails. The binary works fine -- skip tests on darwin.
+  nixpkgs.overlays = [
+    (_: prev: {
+      wrtag = prev.wrtag.overrideAttrs (_: {
+        doCheck = false;
+      });
+    })
+  ];
 
   homebrew = {
     enable = true;

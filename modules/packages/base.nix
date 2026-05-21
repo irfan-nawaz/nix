@@ -81,5 +81,9 @@
     # Optional / situational
     chafa
     figurine
+
+    # macOS housekeeping.
+    pinentry_mac
+    rmtrash
   ];
 }
