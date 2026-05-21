@@ -1,5 +1,13 @@
+# Sops creation rules.
+#
+# To add a recovery recipient (recommended -- single-key blast radius is
+# documented in docs/secret-rotation.md): uncomment the line below and replace
+# the placeholder with a real age public key, then run
+#   sops updatekeys secrets/secrets.yaml
+# to re-encrypt the existing file against the expanded recipient list.
 creation_rules:
   - path_regex: secrets/secrets.yaml
     key_groups:
       - age:
-          - age1389k7kgwfkr69ck5ywpf6ze4f270g7k7p9zxepdlf3pujfa375mqdvrhcy
+          - age1389k7kgwfkr69ck5ywpf6ze4f270g7k7p9zxepdlf3pujfa375mqdvrhcy # primary laptop
+          # - ageXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX  # cold-backup recipient

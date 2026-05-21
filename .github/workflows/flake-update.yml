@@ -1,0 +1,39 @@
+name: flake-update
+
+on:
+  schedule:
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update:
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+      - uses: DeterminateSystems/nix-installer-action@v16
+      - uses: DeterminateSystems/magic-nix-cache-action@v9
+
+      - name: nix flake update
+        run: nix flake update
+
+      - name: Verify both hosts still build
+        run: |
+          nix build .#darwinConfigurations.shaikmdirfannawaz.system --show-trace
+          nix build .#darwinConfigurations.irfan-personal.system --show-trace
+
+      - name: Open PR with flake.lock bump
+        uses: peter-evans/create-pull-request@v6
+        with:
+          commit-message: "chore: weekly flake.lock bump"
+          title: "chore: weekly flake.lock bump"
+          body: |
+            Automated weekly `nix flake update`.
+
+            Both `darwinConfigurations` were verified to build against the new
+            lock file before this PR was opened.
+          branch: chore/flake-update
+          delete-branch: true

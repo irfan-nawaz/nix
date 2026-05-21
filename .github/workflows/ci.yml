@@ -18,5 +18,17 @@ jobs:
       - name: Nix flake check
         run: nix flake check --show-trace
 
-      - name: Build Darwin host
+      - name: Build shaikmdirfannawaz host
+        run: nix build .#darwinConfigurations.shaikmdirfannawaz.system --show-trace
+
+      - name: Build irfan-personal host
         run: nix build .#darwinConfigurations.irfan-personal.system --show-trace
+
+  format-check:
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+      - uses: DeterminateSystems/nix-installer-action@v16
+      - uses: DeterminateSystems/magic-nix-cache-action@v9
+      - name: treefmt --check
+        run: nix build .#checks.aarch64-darwin.formatting --show-trace
