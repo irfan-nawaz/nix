@@ -27,7 +27,7 @@ Or use the `just` wrappers (`just fmt`, `just check`, `just build <host>`).
 - `home/users/profile.nix` is the shared profile. Per-user files
   (`home/users/<u>.nix`) should stay below 15 LOC.
 - Never commit unencrypted secrets. New secret keys go through
-  `docs/bootstrap-secrets.md` + `docs/secret-rotation.md`.
+  `docs/fresh-host-bootstrap.md` + `docs/secret-rotation.md`.
 
 ## Adding a new host
 

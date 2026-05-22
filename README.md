@@ -14,15 +14,22 @@ A reproducible macOS setup built with `nix-darwin`, `home-manager`,
 
 1. Install Determinate Nix (or upstream Nix with flakes enabled).
 2. Clone this repo to `~/nix`.
-3. Bootstrap secrets -- see `docs/bootstrap-secrets.md`.
+3. Walk through [`docs/fresh-host-bootstrap.md`](docs/fresh-host-bootstrap.md)
+   for the end-to-end first-time setup (Determinate Nix, sops age key,
+   `nix run nix-darwin -- switch` for the chicken-and-egg first
+   switch, post-switch verification).
 4. (Optional) Drop `docs/nix.custom.conf.example` into `/etc/nix/nix.custom.conf`
    to enable extra substituters under Determinate.
-5. Build first, switch when build passes:
+5. From the second switch onward, build first then switch:
 
    ```bash
    just build shaikmdirfannawaz    # or: nix build .#darwinConfigurations.shaikmdirfannawaz.system
    just switch shaikmdirfannawaz   # or: sudo darwin-rebuild switch --flake .#shaikmdirfannawaz
    ```
+
+   On a host that has never been switched, use
+   `nix run nix-darwin -- switch --flake .#<hostname>` instead --
+   `darwin-rebuild` does not exist yet. See the bootstrap doc above.
 
 ## Daily workflow
 
