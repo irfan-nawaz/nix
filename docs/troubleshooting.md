@@ -1,5 +1,23 @@
 # Troubleshooting
 
+## Bootstrapping a fresh host
+
+On a host that has never been switched, `darwin-rebuild` does not exist
+yet -- the system profile that installs it into
+`/run/current-system/sw/bin` is only created by the first successful
+switch. Run the first switch via `nix run`:
+
+```
+nix run nix-darwin -- switch --flake .#<hostname>
+```
+
+After this completes once, plain
+`darwin-rebuild switch --flake .#<hostname>` works from any new shell.
+
+On Apple Silicon, if you see a warning about Rosetta not being installed
+during the brew-bundle phase, run `softwareupdate --install-rosetta`
+once before re-switching.
+
 ## `darwin-rebuild` fails with "this Nix is not managed by nix-darwin"
 
 Determinate Nix is the daemon here. `nix.enable = false` is intentional in

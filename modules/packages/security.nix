@@ -11,6 +11,9 @@
     _1password-cli
     doppler
 
+    # TOTP generator for seeds not stored in 1Password.
+    oath-toolkit
+
     # Scanners
     trivy
     syft

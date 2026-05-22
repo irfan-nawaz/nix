@@ -76,10 +76,14 @@
     pik
     caffeine
     flameshot
-    nixfmt-rfc-style
+    nixfmt
 
     # Optional / situational
     chafa
     figurine
+
+    # macOS housekeeping.
+    pinentry_mac
+    rmtrash
   ];
 }

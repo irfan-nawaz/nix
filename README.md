@@ -36,6 +36,12 @@ just gc         # garbage-collect store paths older than 14 days
 Inside the repo, `direnv allow` activates `devShells.default` which ships
 `sops`, `age`, `just`, `nh`, and the formatters.
 
+## Personal CLI stacks
+
+Music, email, calendar, contacts, RSS, password manager, TOTP — all CLI.
+See [`docs/cli-stacks.md`](docs/cli-stacks.md) for a beginner walkthrough
+of every stack installed by `modules/packages/{personal,comms}.nix`.
+
 ## Layout
 
 ```

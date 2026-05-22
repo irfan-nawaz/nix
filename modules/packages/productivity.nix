@@ -13,5 +13,8 @@
     taskwarrior3
     taskwarrior-tui
     dijo
+
+    # Encrypted backups to S3/B2/local.
+    restic
   ];
 }
