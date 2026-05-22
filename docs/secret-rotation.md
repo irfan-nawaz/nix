@@ -68,4 +68,5 @@ If `~/.config/sops/age/keys.txt` on the primary laptop is gone:
 
 ## Bootstrap on a new host
 
-See `docs/bootstrap-secrets.md` for the first-time provisioning steps.
+See `docs/fresh-host-bootstrap.md` (§5 covers age-key provisioning;
+the rest of the doc walks the full first-time switch end-to-end).

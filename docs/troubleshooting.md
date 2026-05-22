@@ -2,21 +2,10 @@
 
 ## Bootstrapping a fresh host
 
-On a host that has never been switched, `darwin-rebuild` does not exist
-yet -- the system profile that installs it into
-`/run/current-system/sw/bin` is only created by the first successful
-switch. Run the first switch via `nix run`:
-
-```
-nix run nix-darwin -- switch --flake .#<hostname>
-```
-
-After this completes once, plain
-`darwin-rebuild switch --flake .#<hostname>` works from any new shell.
-
-On Apple Silicon, if you see a warning about Rosetta not being installed
-during the brew-bundle phase, run `softwareupdate --install-rosetta`
-once before re-switching.
+For end-to-end bootstrap from a brand-new Mac (Determinate Nix, sops
+age key, first switch, verification), see
+[`docs/fresh-host-bootstrap.md`](fresh-host-bootstrap.md). The rest of
+this page covers issues that come up during ongoing use.
 
 ## `darwin-rebuild` fails with "this Nix is not managed by nix-darwin"
 
