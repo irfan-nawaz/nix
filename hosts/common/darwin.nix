@@ -39,6 +39,11 @@
       cleanup = "zap";
       upgrade = false;
     };
+    taps = [
+      "homebrew/bundle"
+      "homebrew/cask"
+      "homebrew/core"
+    ];
     brews = [ "mas" ];
     casks = [ ];
     masApps = { };
@@ -126,4 +131,14 @@
   networking.computerName = lib.mkDefault "${username}-mac";
 
   security.pam.services.sudo_local.touchIdAuth = true;
+
+  # sops-nix creates ~/.ssh as root (mode 0755) when dropping secret
+  # symlinks. home-manager later writes ~/.ssh/config into it but does
+  # not fix ownership. Reassert correct owner + 0700 on every switch.
+  system.activationScripts.postActivation.text = ''
+    if [ -d "/Users/${username}/.ssh" ]; then
+      chown ${username}:staff "/Users/${username}/.ssh"
+      chmod 0700 "/Users/${username}/.ssh"
+    fi
+  '';
 }
