@@ -20,16 +20,17 @@ A reproducible macOS setup built with `nix-darwin`, `home-manager`,
    switch, post-switch verification).
 4. (Optional) Drop `docs/nix.custom.conf.example` into `/etc/nix/nix.custom.conf`
    to enable extra substituters under Determinate.
-5. From the second switch onward, build first then switch:
+5. Build first, switch when build passes:
 
    ```bash
-   just build shaikmdirfannawaz    # or: nix build .#darwinConfigurations.shaikmdirfannawaz.system
-   just switch shaikmdirfannawaz   # or: sudo darwin-rebuild switch --flake .#shaikmdirfannawaz
+   just build shaikmdirfannawaz    # scripts/darwin/build-system
+   just switch shaikmdirfannawaz   # scripts/darwin/switch (build + activate)
    ```
 
-   On a host that has never been switched, use
-   `nix run nix-darwin -- switch --flake .#<hostname>` instead --
-   `darwin-rebuild` does not exist yet. See the bootstrap doc above.
+   `scripts/darwin/switch` works on a fresh host -- it builds the
+   system closure first, then sudo-invokes the just-built
+   `darwin-rebuild` from the build result (so it does not depend on
+   `darwin-rebuild` already being on `PATH`).
 
 ## Daily workflow
 
