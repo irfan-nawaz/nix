@@ -2,11 +2,12 @@ default := "shaikmdirfannawaz"
 
 # Build a host's system closure without activating it.
 build host=default:
-    nix build .#darwinConfigurations.{{host}}.system --print-build-logs
+    scripts/darwin/build-system {{host}}
 
-# Activate a host (requires sudo).
+# Activate a host (requires sudo). Works on fresh hosts -- builds
+# first, then sudo-invokes the freshly-built darwin-rebuild binary.
 switch host=default:
-    sudo darwin-rebuild switch --flake .#{{host}}
+    scripts/darwin/switch {{host}}
 
 # Lighter dry-run via nh (no sudo).
 nh-build host=default:

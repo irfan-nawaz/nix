@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+host="${1:-}"
+if [ -z "$host" ]; then
+  echo "usage: $(basename "$0") <hostname>" >&2
+  exit 1
+fi
+
+echo "building configuration for ${host}"
+nix build ".#darwinConfigurations.${host}.system" \
+  --out-link "./result-darwin-${host}" \
+  --print-build-logs
