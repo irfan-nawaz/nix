@@ -28,7 +28,7 @@ A reproducible macOS setup built with `nix-darwin`, `home-manager`,
    ```
 
    On a host that has never been switched, use
-   `nix run nix-darwin -- switch --flake .#<hostname>` instead --
+   `sudo nix run nix-darwin -- switch --flake .#<hostname>` instead --
    `darwin-rebuild` does not exist yet. See the bootstrap doc above.
 
 ## Daily workflow
