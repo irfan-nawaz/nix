@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+host="${1:-}"
+if [ -z "$host" ]; then
+  echo "usage: $(basename "$0") <hostname>" >&2
+  exit 1
+fi
+
+scripts/darwin/build-system "$host"
+echo "switching to new config for ${host}"
+sudo "./result-darwin-${host}/sw/bin/darwin-rebuild" switch --flake ".#${host}"

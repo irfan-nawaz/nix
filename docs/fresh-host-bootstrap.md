@@ -122,16 +122,19 @@ nix shell nixpkgs#sops -c sops -d secrets/secrets.yaml >/dev/null && echo ok
 You should see `ok`. If you see `failed to get the data key`, the key
 in step 5 doesn't match any recipient in `.sops.yaml` — recheck.
 
-## 6. First switch -- bootstrap via `nix run`
+## 6. First switch
 
-On a fresh host `darwin-rebuild` does not exist yet. It is installed
-into `/run/current-system/sw/bin` by the system profile during the
-first successful switch -- chicken-and-egg. Use `nix run` to invoke
-nix-darwin directly:
+On a fresh host `darwin-rebuild` is not yet on `PATH` -- it is
+installed into `/run/current-system/sw/bin` by the system profile
+during the first successful switch (chicken-and-egg). The repo ships
+two scripts that handle this: `scripts/darwin/build-system` builds the
+system closure (no sudo needed), and `scripts/darwin/switch` builds
+then activates by `sudo`-invoking the *just-built* `darwin-rebuild`
+binary out of the build result -- so it works on a fresh host.
 
 ```
 cd ~/nix
-sudo nix run nix-darwin -- switch --flake .#<hostname>
+scripts/darwin/switch <hostname>
 ```
 
 Where `<hostname>` is one of:
@@ -139,20 +142,13 @@ Where `<hostname>` is one of:
 - `shaikmdirfannawaz`
 - `irfan-personal`
 
-The `sudo` is required -- nix-darwin's activation writes to `/etc`,
-`/run`, and launchd, and aborts with `system activation must be run
-as root` otherwise.
+`just switch <hostname>` wraps the same script if you prefer the
+just-runner.
 
-You will likely see a warning during the run:
-
-```
-warning: $HOME ('/Users/<you>') is not owned by you, falling back to
-the one defined in the 'passwd' file ('/var/root')
-```
-
-This is harmless. Nix notices that euid is root but `$HOME` still
-points at your user, and falls back to root's home for its own state
-directory. The switch itself proceeds normally.
+The `sudo` inside the script is required -- nix-darwin's activation
+writes to `/etc`, `/run`, and launchd, and aborts with `system
+activation must be run as root` otherwise. You will be prompted for
+your password once between the build and activation phases.
 
 The first run downloads 1-2 GB of substitutes and takes 5-15 minutes.
 Expected phases:
@@ -207,13 +203,16 @@ authenticated...` (or the equivalent GitLab welcome).
 
 ## 8. Daily workflow from here on
 
-You no longer need `nix run`:
+`darwin-rebuild` is now on PATH, but `scripts/darwin/switch` /
+`just switch` keeps working too and is recommended -- it builds
+before activating, so a broken config can't half-apply.
 
 ```
-darwin-rebuild switch --flake .#<hostname>   # apply changes
-just check                                    # pre-flight check
-just fmt                                      # treefmt
-just gc                                       # garbage collect
+just switch <hostname>     # build + activate via scripts/darwin/switch
+just build  <hostname>     # build only, no activate
+just check                 # nix flake check
+just fmt                   # treefmt
+just gc                    # garbage collect
 ```
 
 If you cloned over HTTPS in step 4, switch to SSH now:
@@ -224,15 +223,14 @@ git remote set-url origin git@github.com:irfan-nawaz/nix.git
 
 ## 9. Common first-boot snags
 
-- **`sudo darwin-rebuild: command not found`** -- you skipped step 6's
-  `nix run` form. Go back and run that; `darwin-rebuild` lands on
-  PATH after the first successful switch.
+- **`sudo darwin-rebuild: command not found`** -- you tried to invoke
+  `darwin-rebuild` directly before the first switch installed it.
+  Use `scripts/darwin/switch <hostname>` (step 6) instead -- it
+  builds first and then runs the just-built `darwin-rebuild`.
 
-- **`system activation must be run as root`** -- you dropped the
-  `sudo` on step 6. Re-run with `sudo`.
-
-- **`$HOME ('/Users/...') is not owned by you`** -- expected when
-  running under `sudo`; harmless. See step 6 for the explanation.
+- **`system activation must be run as root`** -- you ran the built
+  `darwin-rebuild` without `sudo`. The provided script handles this
+  for you; if invoking manually, prefix with `sudo`.
 
 - **`sops: failed to get the data key`** --
   `~/.config/sops/age/keys.txt` is missing, wrong mode, or doesn't
