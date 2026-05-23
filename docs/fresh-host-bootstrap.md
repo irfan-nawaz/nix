@@ -131,7 +131,7 @@ nix-darwin directly:
 
 ```
 cd ~/nix
-nix run nix-darwin -- switch --flake .#<hostname>
+sudo nix run nix-darwin -- switch --flake .#<hostname>
 ```
 
 Where `<hostname>` is one of:
@@ -139,9 +139,20 @@ Where `<hostname>` is one of:
 - `shaikmdirfannawaz`
 - `irfan-personal`
 
-**Do not prefix this command with `sudo`.** nix-darwin elevates
-internally. Running under `sudo` confuses Nix's `$HOME` lookup and
-prints `$HOME is not owned by you` (harmless but ugly).
+The `sudo` is required -- nix-darwin's activation writes to `/etc`,
+`/run`, and launchd, and aborts with `system activation must be run
+as root` otherwise.
+
+You will likely see a warning during the run:
+
+```
+warning: $HOME ('/Users/<you>') is not owned by you, falling back to
+the one defined in the 'passwd' file ('/var/root')
+```
+
+This is harmless. Nix notices that euid is root but `$HOME` still
+points at your user, and falls back to root's home for its own state
+directory. The switch itself proceeds normally.
 
 The first run downloads 1-2 GB of substitutes and takes 5-15 minutes.
 Expected phases:
@@ -217,8 +228,11 @@ git remote set-url origin git@github.com:irfan-nawaz/nix.git
   `nix run` form. Go back and run that; `darwin-rebuild` lands on
   PATH after the first successful switch.
 
-- **`$HOME ('/Users/...') is not owned by you`** -- you prefixed step 6
-  with `sudo`. Drop the `sudo`; nix-darwin elevates internally.
+- **`system activation must be run as root`** -- you dropped the
+  `sudo` on step 6. Re-run with `sudo`.
+
+- **`$HOME ('/Users/...') is not owned by you`** -- expected when
+  running under `sudo`; harmless. See step 6 for the explanation.
 
 - **`sops: failed to get the data key`** --
   `~/.config/sops/age/keys.txt` is missing, wrong mode, or doesn't
