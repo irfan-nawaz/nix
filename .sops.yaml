@@ -10,4 +10,4 @@ creation_rules:
     key_groups:
       - age:
           - age1389k7kgwfkr69ck5ywpf6ze4f270g7k7p9zxepdlf3pujfa375mqdvrhcy # primary laptop
-          # - ageXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX  # cold-backup recipient
+          - age1w5rz98lxucqpwzg3nqt7cfxu9gnhdv04mfunymfvlyxsj908xesqjcud99 # cold-backup recipient (passphrase-wrapped, see docs/secret-rotation.md)
