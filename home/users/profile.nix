@@ -22,6 +22,15 @@
     # programs.atuin.settings is set. Keeping the TOML form as the
     # source of truth instead of translating ~370 lines to a Nix attrset.
     "atuin/config.toml".source = ../configs/atuin/config.toml;
+    # allowed_signers maps committer email -> public SSH key body so
+    # `git log --show-signature` can verify SSH-signed commits locally.
+    # Public halves only; safe to live in plaintext in the Nix store.
+    "git/allowed_signers".text = ''
+      shaikmd.irfannawaz2020@gmail.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIN2ZO1/YR/bAgxPFfWvwLU2oIOljgT684bDT4YOiJVe2
+      irfan.nawaz@geekyants.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMo3yIVsdzADsAMg41v4bI4PvmCrurGWTTlQOWzWYWj+
+      irfan.nawaz@geekyants.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIM2EMJd+smznpvUBuGZBByWhpdauNvbJn46QFhpwzWOb
+      inawaz.ctr@tzero.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOs553WHdyGIvsg/7ODUuJps2AuYIo1BjDyvtxDw8eyT
+    '';
   };
 
   home.file.".curlrc".source = ../configs/curl/.curlrc;
@@ -74,7 +83,11 @@
     signing = {
       format = "ssh";
       signByDefault = true;
-      key = "~/.ssh/id_ed25519_github_geekyants.pub";
+      # Fail-loud default: a repo whose remote URL does not match any
+      # include below will refuse to sign, rather than silently signing
+      # with whichever key happens to be the global default. Every real
+      # repo must be covered by one of the includes.
+      key = "/dev/null";
     };
 
     settings = {
@@ -94,6 +107,7 @@
         contents.user = {
           name = "irfan-nawaz";
           email = "shaikmd.irfannawaz2020@gmail.com";
+          signingkey = "~/.ssh/id_ed25519_github_personal.pub";
         };
       }
       {
@@ -101,6 +115,7 @@
         contents.user = {
           name = "irfan-ga";
           email = "irfan.nawaz@geekyants.com";
+          signingkey = "~/.ssh/id_ed25519_github_geekyants.pub";
         };
       }
       {
@@ -108,6 +123,7 @@
         contents.user = {
           name = "irfan.nawaz";
           email = "irfan.nawaz@geekyants.com";
+          signingkey = "~/.ssh/id_ed25519_gitlab_geekyants.pub";
         };
       }
       {
@@ -115,6 +131,7 @@
         contents.user = {
           name = "inawaz.ctr";
           email = "inawaz.ctr@tzero.com";
+          signingkey = "~/.ssh/id_ed25519_gitlab_tzero.pub";
         };
       }
     ];

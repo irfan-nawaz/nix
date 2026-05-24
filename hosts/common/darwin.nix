@@ -94,9 +94,11 @@
   # Nix is managed by Determinate Nix here, so `nix.enable = false` keeps
   # nix-darwin from fighting it. As a side effect, every `nix.*` option is
   # inert -- substituters, trusted-users, and experimental-features must be
-  # configured via Determinate's /etc/nix/nix.custom.conf (see
-  # docs/nix.custom.conf.example).
+  # configured via Determinate's /etc/nix/nix.custom.conf, which it loads
+  # via `!include` from /etc/nix/nix.conf. Manage that file declaratively
+  # from docs/nix.custom.conf.example so the on-disk copy can't drift.
   nix.enable = false;
+  environment.etc."nix/nix.custom.conf".source = ../../docs/nix.custom.conf.example;
 
   # nix-darwin tooling that improves rebuild ergonomics and shell completion.
   environment.systemPackages = with pkgs; [
