@@ -33,7 +33,21 @@
     '';
   };
 
-  home.file.".curlrc".source = ../configs/curl/.curlrc;
+  # Public halves of the SSH keys whose private halves are deployed via
+  # sops-nix. ssh-keygen -Y sign needs the pubkey file alongside the
+  # private key at the path referenced by user.signingkey. Public keys
+  # are not secrets -- declaring them inline is fine.
+  home.file = {
+    ".curlrc".source = ../configs/curl/.curlrc;
+    ".ssh/id_ed25519_github_personal.pub".text =
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIN2ZO1/YR/bAgxPFfWvwLU2oIOljgT684bDT4YOiJVe2 github-personal\n";
+    ".ssh/id_ed25519_github_geekyants.pub".text =
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMo3yIVsdzADsAMg41v4bI4PvmCrurGWTTlQOWzWYWj+ github-geekyants\n";
+    ".ssh/id_ed25519_gitlab_geekyants.pub".text =
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIM2EMJd+smznpvUBuGZBByWhpdauNvbJn46QFhpwzWOb gitlab-geekyants\n";
+    ".ssh/id_ed25519_gitlab_tzero.pub".text =
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOs553WHdyGIvsg/7ODUuJps2AuYIo1BjDyvtxDw8eyT gitlab-tzero\n";
+  };
 
   programs.zsh.shellAliases = {
     rebuild = "sudo darwin-rebuild switch --flake ~/nix#${hostname}";
@@ -101,9 +115,16 @@
       gpg.ssh.allowedSignersFile = "~/.config/git/allowed_signers";
     };
 
+    # hasconfig: patterns are matched with wildmatch + WM_PATHNAME, so
+    # `*` cannot cross `/`. The only valid cross-path token is `/**`,
+    # which must be preceded by `/`. The canonical shape that matches
+    # both `<host>:owner/repo.git` (2-deep) and GitLab's nested
+    # `<host>:group/sub/repo.git` (N-deep) is `<host>:*/**`:
+    #   `*`   -> one path component (the user/group)
+    #   `/**` -> the slash plus everything after, any depth
     includes = [
       {
-        condition = "hasconfig:remote.*.url:git@github-personal:";
+        condition = "hasconfig:remote.*.url:git@github-personal:*/**";
         contents.user = {
           name = "irfan-nawaz";
           email = "shaikmd.irfannawaz2020@gmail.com";
@@ -111,7 +132,7 @@
         };
       }
       {
-        condition = "hasconfig:remote.*.url:git@github.com:";
+        condition = "hasconfig:remote.*.url:git@github.com:*/**";
         contents.user = {
           name = "irfan-ga";
           email = "irfan.nawaz@geekyants.com";
@@ -119,7 +140,7 @@
         };
       }
       {
-        condition = "hasconfig:remote.*.url:git@git.geekyants.com:";
+        condition = "hasconfig:remote.*.url:git@git.geekyants.com:*/**";
         contents.user = {
           name = "irfan.nawaz";
           email = "irfan.nawaz@geekyants.com";
@@ -127,7 +148,7 @@
         };
       }
       {
-        condition = "hasconfig:remote.*.url:git@gitlab.com:";
+        condition = "hasconfig:remote.*.url:git@gitlab.com:*/**";
         contents.user = {
           name = "inawaz.ctr";
           email = "inawaz.ctr@tzero.com";
