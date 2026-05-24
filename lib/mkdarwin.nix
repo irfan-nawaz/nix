@@ -4,12 +4,6 @@
   hostname,
   username,
 }:
-let
-  pkgs-unstable = import inputs.nixpkgs-unstable {
-    inherit system;
-    config.allowUnfree = true;
-  };
-in
 inputs.darwin.lib.darwinSystem {
   inherit system;
 
@@ -18,7 +12,6 @@ inputs.darwin.lib.darwinSystem {
       inputs
       hostname
       username
-      pkgs-unstable
       ;
   };
 
@@ -36,7 +29,6 @@ inputs.darwin.lib.darwinSystem {
           inputs
           hostname
           username
-          pkgs-unstable
           ;
       };
       home-manager.users.${username} = import ./../home/users/${username}.nix;
