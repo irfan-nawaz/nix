@@ -45,8 +45,6 @@
       "homebrew/core"
     ];
     brews = [ "mas" ];
-    casks = [ ];
-    masApps = { };
   };
 
   system = {

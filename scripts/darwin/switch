@@ -10,3 +10,8 @@ fi
 scripts/darwin/build-system "$host"
 echo "switching to new config for ${host}"
 sudo "./result-darwin-${host}/sw/bin/darwin-rebuild" switch --flake ".#${host}"
+
+# The symlink is only needed to point sudo at the just-built activator.
+# After a successful switch, the closure is registered with the system
+# and the symlink is just clutter that pins the build in the GC root.
+rm -f "./result-darwin-${host}"
