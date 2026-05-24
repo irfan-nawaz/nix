@@ -3,7 +3,6 @@
   system,
   hostname,
   username,
-  extraModules ? [ ],
 }:
 let
   pkgs-unstable = import inputs.nixpkgs-unstable {
@@ -74,6 +73,5 @@ inputs.darwin.lib.darwinSystem {
 
     # SOPS Secrets Management
     inputs.sops-nix.darwinModules.sops
-  ]
-  ++ extraModules;
+  ];
 }

@@ -343,9 +343,9 @@
       setDockerHost = false;
 
       settings = {
-        cpu = 4;
-        memory = 8;
-        disk = 100;
+        cpu = lib.mkDefault 4;
+        memory = lib.mkDefault 8;
+        disk = lib.mkDefault 100;
 
         vmType = "vz";
         mountType = "virtiofs";
