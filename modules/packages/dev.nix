@@ -18,6 +18,10 @@
     asciinema
     t-rec
 
+    # Forge CLIs (GitHub + GitLab) -- repo / PR / SSH-key management.
+    gh
+    glab
+
     # Bookmarks
     bmm
 
