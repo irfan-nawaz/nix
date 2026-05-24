@@ -16,13 +16,10 @@ jobs:
       - uses: DeterminateSystems/magic-nix-cache-action@v9
 
       - name: Nix flake check
+        # Builds checks.<system>.{shaikmdirfannawaz,irfan-personal} which
+        # are the host darwin-system derivations, plus the formatting
+        # check — no need for additional explicit `nix build` steps.
         run: nix flake check --show-trace
-
-      - name: Build shaikmdirfannawaz host
-        run: nix build .#darwinConfigurations.shaikmdirfannawaz.system --show-trace
-
-      - name: Build irfan-personal host
-        run: nix build .#darwinConfigurations.irfan-personal.system --show-trace
 
   format-check:
     runs-on: macos-14

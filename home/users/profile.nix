@@ -17,7 +17,14 @@
   xdg.configFile = {
     "starship.toml".source = ../starship/starship.toml;
     "ghostty/config".source = ../ghostty/config;
+    "procs/config.toml".source = ../configs/procs/config.toml;
+    # atuin's HM module only writes ~/.config/atuin/config.toml when
+    # programs.atuin.settings is set. Keeping the TOML form as the
+    # source of truth instead of translating ~370 lines to a Nix attrset.
+    "atuin/config.toml".source = ../configs/atuin/config.toml;
   };
+
+  home.file.".curlrc".source = ../configs/curl/.curlrc;
 
   programs.zsh.shellAliases = {
     rebuild = "sudo darwin-rebuild switch --flake ~/nix#${hostname}";
