@@ -1,8 +1,16 @@
-{ hostname, ... }:
+{ hostname, lib, ... }:
 {
   imports = [
     ../common/default.nix
+    ../../modules/home
   ];
+
+  mySystem.home = {
+    tui.enable = lib.mkDefault true;
+    gui.enable = lib.mkDefault true;
+    desktop-mac.enable = lib.mkDefault true;
+    ai.enable = lib.mkDefault true;
+  };
 
   home.sessionVariables.GITHUB_TOKEN_FILE = "/run/secrets/github_token";
 
