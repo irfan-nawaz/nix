@@ -1,0 +1,16 @@
+font-size = 13
+background-opacity = 0.95
+macos-titlebar-style = tabs
+window-padding-x = 10
+window-padding-y = 8
+theme = TokyoNight
+
+# Every new window/tab attaches to the always-on tmux session `main`
+# (creating it on first launch). Other sessions are declared in
+# ~/.config/sesh/sesh.toml and spawn lazily via `prefix s`.
+#
+# `zsh -c` (no `-i`) skips .zshrc -- we don't need interactive shell
+# setup just to call sesh. The tmux pane sesh attaches us into spawns
+# its own interactive shell which loads .zshrc once, for the real work.
+# Dropping `-i` here saves a full zsh init on every new Ghostty window.
+command = zsh -c "exec sesh connect main"

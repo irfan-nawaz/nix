@@ -19,6 +19,9 @@
     ../../modules/packages/comms.nix
   ];
 
+  # Required for: terraform (BSL since v1.6) and _1password-cli at the
+  # system layer; slack/raycast/notion-app/code-cursor/postman/tableplus/
+  # meetingbar in home/common; vscode + obsidian via modules/home/gui.nix.
   nixpkgs.config.allowUnfree = true;
 
   # wrtag's test suite includes a cover-art filename check that assumes

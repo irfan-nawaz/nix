@@ -1,4 +1,9 @@
-{ config, lib, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 let
   cfg = config.mySystem.home.gui;
 in
@@ -13,5 +18,19 @@ in
     programs.obsidian.enable = true;
     programs.sioyek.enable = true;
     programs.vscode.enable = true;
+
+    # macOS GUI casks installed via home-manager (no home-manager program
+    # module exists for these). Gated behind gui.enable so a leaner
+    # profile (e.g. server-style work machine) can drop them all.
+    home.packages = with pkgs; [
+      slack
+      tableplus
+      raycast
+      meetingbar
+      postman
+      notion-app
+      code-cursor
+      ghostty-bin
+    ];
   };
 }

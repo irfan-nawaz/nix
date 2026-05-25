@@ -24,6 +24,11 @@ inputs.darwin.lib.darwinSystem {
     {
       home-manager.useGlobalPkgs = true;
       home-manager.useUserPackages = true;
+      # Rename any pre-existing target file to `<name>.backup` instead
+      # of aborting the activation. Lets HM take ownership of paths
+      # that were created imperatively (e.g. `gh config set …` writing
+      # ~/.config/gh/config.yml before HM was wired up to manage it).
+      home-manager.backupFileExtension = "backup";
       home-manager.extraSpecialArgs = {
         inherit
           inputs

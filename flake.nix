@@ -44,10 +44,7 @@
     }:
     let
       lib = import ./lib { inherit inputs; };
-      forAllSystems = nixpkgs.lib.genAttrs [
-        "aarch64-darwin"
-        "x86_64-darwin"
-      ];
+      forAllSystems = nixpkgs.lib.genAttrs [ "aarch64-darwin" ];
       treefmtFor = system: treefmt-nix.lib.evalModule nixpkgs.legacyPackages.${system} ./treefmt.nix;
     in
     {
@@ -104,15 +101,10 @@
         }
       );
 
-      checks = forAllSystems (
-        system:
-        nixpkgs.lib.optionalAttrs (system == "aarch64-darwin") {
-          shaikmdirfannawaz = self.darwinConfigurations.shaikmdirfannawaz.system;
-          irfan-personal = self.darwinConfigurations.irfan-personal.system;
-        }
-        // {
-          formatting = (treefmtFor system).config.build.check self;
-        }
-      );
+      checks = forAllSystems (system: {
+        shaikmdirfannawaz = self.darwinConfigurations.shaikmdirfannawaz.system;
+        irfan-personal = self.darwinConfigurations.irfan-personal.system;
+        formatting = (treefmtFor system).config.build.check self;
+      });
     };
 }

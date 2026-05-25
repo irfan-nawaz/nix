@@ -22,6 +22,10 @@
     gh
     glab
 
+    # tmux session manager: fuzzy picker (prefix s) + declarative
+    # session set in ~/.config/sesh/sesh.toml. See home/programs/sesh.nix.
+    sesh
+
     # Bookmarks
     bmm
 
