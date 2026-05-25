@@ -39,6 +39,11 @@
       # background sessions survive across ghostty closes
       set -g exit-empty off
 
+      # when a session's last pane exits, switch to another live session
+      # instead of detaching back to the terminal. Pairs naturally with
+      # sesh's multi-session workflow -- canonical sesh README setting.
+      set -g detach-on-destroy off
+
       # sesh picker. -H hides the currently-attached session. Don't add
       # -i (icons add ANSI bytes that break `sesh connect`) or -d
       # (path-dedupe hides sessions sharing ~).
