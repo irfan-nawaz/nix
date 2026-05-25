@@ -163,7 +163,6 @@ let
     sniff = "sudo tcpdump -i any";
 
     bw = "bandwhich";
-    nettop = "btop";
 
     speed = "iperf3";
 
