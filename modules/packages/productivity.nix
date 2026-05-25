@@ -10,7 +10,8 @@
     tz
     basilk
     taskbook
-    taskwarrior3
+    # taskwarrior3 is managed via home/programs/taskwarrior.nix (HM module
+    # owns ~/.taskrc); only taskwarrior-tui stays here -- no HM module.
     taskwarrior-tui
     dijo
 
