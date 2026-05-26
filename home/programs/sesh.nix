@@ -29,13 +29,15 @@
 
 let
   sessions = {
-    main   = { path = "~"; };
-    nix    = { path = "~/nix"; command = "nvim ."; };
-    claude = { path = "~/nix"; command = "claude"; };
-    notes  = { path = "~/Documents/zk"; command = "zk edit --interactive"; };
-    tasks  = { path = "~"; command = "taskwarrior-tui"; };
-    sys    = { path = "~"; command = "btop"; };
-    clock  = { path = "~"; command = "clock-rs"; };
+    main    = { path = "~"; };
+    nix     = { path = "~/nix"; command = "nvim ."; };
+    claude  = { path = "~/nix"; command = "claude"; };
+    notes   = { path = "~/Documents/zk"; command = "zk edit --interactive"; };
+    tasks   = { path = "~"; command = "taskwarrior-tui"; };
+    habits  = { path = "~"; command = "dijo"; };
+    journal = { path = "~/Documents/journal"; command = "jrnl --edit"; };
+    sys     = { path = "~"; command = "btop"; };
+    clock   = { path = "~"; command = "clock-rs"; };
   };
 
   toToml = name: s: ''
