@@ -6,7 +6,13 @@
 # Sync is intentionally off -- single-machine. Add a `sync.server.*`
 # block under `config` when you have a taskchampion server URL +
 # credentials (via sops, not inline).
-{ pkgs, ... }:
+{ config, pkgs, ... }:
+let
+  # Standard timewarrior-shipped hook. Pure stdlib python3 -- shebang is
+  # `/usr/bin/env python3`, which resolves to macOS system python (3.9+,
+  # has json + subprocess). No extra deps needed.
+  timewHook = "${pkgs.timewarrior}/share/doc/timew/ext/on-modify.timewarrior";
+in
 {
   programs.taskwarrior = {
     enable = true;
@@ -23,6 +29,21 @@
 
       # Monday-start weeks.
       weekstart = "monday";
+
+      # Point taskwarrior at an HM-managed hooks dir so the timewarrior
+      # bridge below is picked up. Default would be
+      # ~/.local/share/task/hooks (under data.location), which isn't a
+      # natural xdg.configFile target.
+      hooks.location = "${config.xdg.configHome}/task/hooks";
     };
+  };
+
+  # taskwarrior <-> timewarrior bridge: `task <id> start` auto-starts a
+  # timew interval tagged with the task's project + tags + description;
+  # `task <id> stop|done` stops it. Stock script shipped by timewarrior
+  # upstream -- no fork, no patching.
+  xdg.configFile."task/hooks/on-modify.timewarrior" = {
+    source = timewHook;
+    executable = true;
   };
 }
