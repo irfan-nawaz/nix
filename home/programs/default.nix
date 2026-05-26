@@ -47,6 +47,8 @@
 
     # Tier A — user-data-dependent stubs (TODO: fill placeholders + enable)
     ./aerospace.nix
+    ./hammerspoon.nix
+    ./karabiner.nix
     ./himalaya.nix
     ./k9s.nix
     ./khal.nix

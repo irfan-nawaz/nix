@@ -43,28 +43,24 @@ inputs.darwin.lib.darwinSystem {
     inputs.nix-homebrew.darwinModules.nix-homebrew
     {
       nix-homebrew = {
-        # Install Homebrew under the default prefix
         enable = true;
-
-        # Apple Silicon Only: Also install Homebrew under the default Intel prefix for Rosetta 2
+        # Apple Silicon only: also install brew under the Intel prefix
+        # so Rosetta x86_64 casks/bottles work.
         enableRosetta = true;
-
-        # User owning the Homebrew prefix
         user = username;
-
         autoMigrate = true;
 
-        # Optional: Declarative tap management
-        taps = with inputs; {
-          "homebrew/homebrew-core" = homebrew-core;
-          "homebrew/homebrew-cask" = homebrew-cask;
-          "homebrew/homebrew-bundle" = homebrew-bundle;
-        };
-
-        # Optional: Enable fully-declarative tap management
+        # Intentionally no `taps = { ... }` / `mutableTaps = false`.
         #
-        # With mutableTaps disabled, taps can no longer be added imperatively with `brew tap`.
-        mutableTaps = false;
+        # Brew 5.x ships in full API-mode by default (formulae.brew.sh):
+        # it fetches cask/core JSON on demand and never needs a local tap
+        # clone. Pinning taps to read-only Nix-store symlinks (no .git)
+        # made brew 5's cask parser explode with
+        #   "Cask '<name>' is unreadable: wrong number of arguments
+        #    (given 1, expected 0)"
+        # because the parser tries to walk the tap as a git checkout and
+        # fails halfway through stanza eval. Letting brew use the API is
+        # both the upstream default and the community workaround.
       };
     }
 

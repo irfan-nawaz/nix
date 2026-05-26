@@ -42,12 +42,34 @@
       cleanup = "zap";
       upgrade = false;
     };
-    taps = [
-      "homebrew/bundle"
-      "homebrew/cask"
-      "homebrew/core"
-    ];
+    # No `taps = [...]`. Brew 5.x reads cask/core formulae directly from
+    # formulae.brew.sh in API mode (its default); tapping homebrew/cask,
+    # homebrew/core, or homebrew/bundle as explicit taps is unnecessary
+    # and conflicts with the API path -- triggers Ruby parse errors like
+    # "Cask is unreadable: wrong number of arguments (given 1, expected 0)".
+    # `brew bundle` itself is built into brew since 4.x, no tap required.
     brews = [ "mas" ];
+    # macOS apps installed via cask rather than nixpkgs. The pattern: anything
+    # that requires a stable /Applications/*.app bundle path for macOS-managed
+    # permissions/entitlements goes through brew. Nix store paths change every
+    # rebuild, which forces macOS to re-prompt for Accessibility / Input
+    # Monitoring / Notifications / DriverKit sysext approval on every switch.
+    #
+    # - hammerspoon: Lua scripting engine. init.lua managed declaratively
+    #   from home/programs/hammerspoon.nix. Needs Accessibility +
+    #   Notifications grants.
+    # - karabiner-elements: physical-key remapper. As of 15.x upstream
+    #   restructured into Privileged-Daemons-v2.app + Non-Privileged-Agents-v2.app
+    #   + Karabiner-Core-Service.app; nix-darwin's services.karabiner-elements
+    #   module is hardcoded for the 14.x layout (separate grabber/observer
+    #   processes that no longer exist) and is broken. The upstream-signed
+    #   cask handles DriverKit sysext installation/notarization and privileged
+    #   helper setup correctly. karabiner.json managed declaratively from
+    #   home/programs/karabiner.nix.
+    casks = [
+      "hammerspoon"
+      "karabiner-elements"
+    ];
   };
 
   system = {
@@ -134,6 +156,12 @@
   networking.computerName = lib.mkDefault "${username}-mac";
 
   security.pam.services.sudo_local.touchIdAuth = true;
+
+  # Karabiner-Elements installation moved to homebrew.casks above (see the
+  # block comment there for the full rationale). nix-darwin's
+  # services.karabiner-elements module targets the pre-15.x process layout
+  # and the upstream rewrite broke it. karabiner.json itself stays in HM
+  # (home/programs/karabiner.nix) -- only the binary install moved.
 
   # sops-nix creates ~/.ssh as root (mode 0755) when dropping secret
   # symlinks. home-manager later writes ~/.ssh/config into it but does

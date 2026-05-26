@@ -11,19 +11,12 @@
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs-darwin";
 
+    # nix-homebrew installs brew itself declaratively; the actual
+    # cask/core/bundle taps are NOT pinned -- brew 5.x reads them from
+    # formulae.brew.sh on demand (API mode is the default). See the long
+    # comment in lib/mkdarwin.nix for why pinning the taps breaks cask
+    # parsing under brew 5.
     nix-homebrew.url = "github:zhaofengli-wip/nix-homebrew";
-    homebrew-core = {
-      url = "github:homebrew/homebrew-core";
-      flake = false;
-    };
-    homebrew-cask = {
-      url = "github:homebrew/homebrew-cask";
-      flake = false;
-    };
-    homebrew-bundle = {
-      url = "github:homebrew/homebrew-bundle";
-      flake = false;
-    };
 
     nix-direnv.url = "github:nix-community/nix-direnv";
     nix-direnv.inputs.nixpkgs.follows = "nixpkgs-darwin";
