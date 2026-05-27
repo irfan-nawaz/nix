@@ -9,7 +9,10 @@
 { lib, ... }:
 {
   home.activation.zkNotebook = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-    $DRY_RUN_CMD mkdir -p "$HOME/Documents/zk/.zk"
+    $DRY_RUN_CMD mkdir -p "$HOME/Documents/zk/.zk/templates"
+    if [ ! -f "$HOME/Documents/zk/.zk/templates/default.md" ]; then
+      $DRY_RUN_CMD cp "$HOME/.zk/templates/default.md" "$HOME/Documents/zk/.zk/templates/default.md"
+    fi
   '';
 
   programs.zk.settings = {
