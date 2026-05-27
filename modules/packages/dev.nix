@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, pkgs-unstable, ... }:
 {
   environment.systemPackages = with pkgs; [
     # Databases
@@ -10,10 +10,6 @@
     smassh
     sampler
 
-    # AI tools
-    yai
-    pi-coding-agent
-
     # Terminal recording / sharing
     asciinema
     t-rec
@@ -21,10 +17,6 @@
     # Forge CLIs (GitHub + GitLab) -- repo / PR / SSH-key management.
     gh
     glab
-
-    # tmux session manager: fuzzy picker (prefix s) + declarative
-    # session set in ~/.config/sesh/sesh.toml. See home/programs/sesh.nix.
-    sesh
 
     # Bookmarks
     bmm
@@ -34,5 +26,12 @@
     runme
     presenterm
     tui-journal
-  ];
+  ] ++ (with pkgs-unstable; [
+    # AI tools — release frequently, keep on unstable
+    yai
+    pi-coding-agent
+
+    # tmux session manager — active development
+    sesh
+  ]);
 }

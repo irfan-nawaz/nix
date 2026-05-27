@@ -1,6 +1,8 @@
 # yazi: defaults are good; tweak the opener so media files use mpv and
 # images preview via chafa-equivalent. Keymap stays default.
+{ pkgs-unstable, ... }:
 {
+  programs.yazi.package = pkgs-unstable.yazi;
   programs.yazi.settings = {
     manager = {
       ratio = [
