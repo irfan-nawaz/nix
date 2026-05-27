@@ -1,4 +1,7 @@
+font-family = JetBrainsMono Nerd Font
 font-size = 13
+font-feature = +liga
+font-feature = +calt
 background-opacity = 0.95
 macos-titlebar-style = tabs
 window-padding-x = 10
