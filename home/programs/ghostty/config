@@ -14,3 +14,23 @@ theme = TokyoNight
 # its own interactive shell which loads .zshrc once, for the real work.
 # Dropping `-i` here saves a full zsh init on every new Ghostty window.
 command = zsh -c "exec sesh connect main"
+
+# ─── Quake-style dropdown terminal ────────────────────────────────
+# `toggle_quick_terminal` is Ghostty-native -- one persistent surface
+# that slides down on hyper+` and slides back on the same key. Sits
+# above aerospace's tiling (Ghostty draws it on the macOS overlay
+# layer, so it ignores the WM entirely) -- perfect for `git status`,
+# `claude`, tail-a-log, scratch python.
+#
+# The keybind is `global:` so it fires even when another app has
+# focus. Modifiers `cmd+ctrl+alt+shift` is the Karabiner-mapped hyper
+# (caps-lock); matches the convention used by aerospace's mode trigger.
+#
+# Note: first toggle spawns the configured `command` above, so the
+# scratchpad attaches to the same tmux `main` session as the regular
+# windows. If you want true session isolation, create a dedicated
+# `scratch` sesh entry and switch into it once via `prefix s`.
+quick-terminal-position = top
+quick-terminal-animation-duration = 0.1
+quick-terminal-screen = mouse
+keybind = global:cmd+ctrl+alt+shift+grave_accent=toggle_quick_terminal

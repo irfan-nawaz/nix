@@ -78,6 +78,20 @@
                        script="$PLUGIN_DIR/aerospace.sh $sid"
       done
 
+      # ─── Front app (left, after workspace pills) ───────────────────
+      # Shows the currently-focused app's name. Sketchybar emits the
+      # built-in `front_app_switched` event whenever macOS focus changes
+      # and passes the app name in $INFO -- near-zero overhead, no poll.
+      # The script also runs once on item creation (no $INFO yet), so
+      # fall back to lsappinfo for the initial paint.
+      sketchybar --add item front_app left \
+                 --subscribe front_app front_app_switched \
+                 --set front_app \
+                       icon.drawing=off \
+                       label.color=$ACCENT \
+                       label.padding_left=10 \
+                       script="$PLUGIN_DIR/front_app.sh"
+
       # ─── Right side ────────────────────────────────────────────────
       # Items added to "right" stack right-to-left in declaration order,
       # so visual order on the bar will be:
@@ -87,9 +101,13 @@
                  --set battery update_freq=60 \
                        script="$PLUGIN_DIR/battery.sh"
 
+      # Clock label must be set via `sketchybar --set` -- sketchybar does
+      # NOT capture a script's stdout as the label, so a bare `date ...`
+      # only prints to the launchd log and the bar stays empty. Wrap the
+      # date call in an explicit set on $NAME instead.
       sketchybar --add item clock right \
                  --set clock update_freq=10 \
-                       script="date '+%a %b %d  %H:%M'"
+                       script="sketchybar --set \$NAME label=\"\$(date '+%a %b %d  %H:%M')\""
 
       sketchybar --add item timew right \
                  --subscribe timew timew_update \
@@ -135,25 +153,48 @@
     '';
   };
 
+  xdg.configFile."sketchybar/plugins/front_app.sh" = {
+    executable = true;
+    text = ''
+      #!/usr/bin/env bash
+      # On a front_app_switched event sketchybar sets $INFO to the app
+      # name. On initial item creation no event has fired yet, so query
+      # lsappinfo directly for the current frontmost app.
+      APP="$INFO"
+      if [[ -z "$APP" ]]; then
+        APP=$(/usr/bin/lsappinfo info -only name "$(/usr/bin/lsappinfo front)" 2>/dev/null \
+              | awk -F\" '/LSDisplayName/{print $4}')
+      fi
+      sketchybar --set "$NAME" label="''${APP:-—}"
+    '';
+  };
+
   xdg.configFile."sketchybar/plugins/timew.sh" = {
     executable = true;
     text = ''
       #!/usr/bin/env bash
       # Show "tag · 23m" while a timew interval is active; hide otherwise.
-      # `dom.active.start` is ISO-basic UTC ("20260526T120000Z") -- parsed
-      # with BSD `date -j -f` (we're on macOS, so /usr/bin/date is BSD).
+      # `dom.active.start` is ISO 8601 extended LOCAL time
+      # ("2026-05-26T23:44:45") -- parsed with BSD `date -j -f` (no -u; the
+      # input has no zone marker so we treat it as local, matching timew).
+      # If parsing fails (empty EPOCH), bail out -- else arithmetic treats
+      # empty as 0 and ELAPSED becomes the entire unix epoch (~494000h).
       if [[ "$(timew get dom.active 2>/dev/null)" != "1" ]]; then
         sketchybar --set "$NAME" drawing=off
         exit 0
       fi
 
       TAG=""
-      if [[ "$(timew get dom.active.tag.count 2>/dev/null)" -gt 0 ]]; then
-        TAG="$(timew get dom.active.tag.1 2>/dev/null)"
+      if [[ "$(timew get dom.active.tags.count 2>/dev/null)" -gt 0 ]]; then
+        TAG="$(timew get dom.active.tags.1 2>/dev/null)"
       fi
 
       START="$(timew get dom.active.start 2>/dev/null)"
-      EPOCH=$(date -j -u -f '%Y%m%dT%H%M%SZ' "$START" '+%s' 2>/dev/null)
+      EPOCH=$(date -j -f '%Y-%m-%dT%H:%M:%S' "$START" '+%s' 2>/dev/null)
+      if [[ -z "$EPOCH" ]]; then
+        sketchybar --set "$NAME" drawing=off
+        exit 0
+      fi
       ELAPSED=$(( $(date '+%s') - EPOCH ))
       H=$(( ELAPSED / 3600 ))
       M=$(( (ELAPSED % 3600) / 60 ))

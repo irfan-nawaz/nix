@@ -17,7 +17,8 @@
 # wm-mode is unmodified keys -- no chord conflicts possible.
 #
 # Reference: https://nikitabobko.github.io/AeroSpace/guide
-_: {
+{ pkgs, ... }:
+{
   # HM owns the launchd agent (single source of truth for startup).
   # `start-at-login = false` below is intentional: aerospace's own
   # autostart registers itself as a macOS Login Item, which spawns a
@@ -48,10 +49,15 @@ _: {
     # workspace pills. AEROSPACE_FOCUSED_WORKSPACE is set by aerospace
     # in the env for the spawned process; sketchybar subscribes to the
     # custom `aerospace_workspace_change` event.
+    #
+    # Absolute path to sketchybar is required: aerospace is started by a
+    # launchd agent whose PATH only contains /usr/bin:/bin:/usr/sbin:/sbin,
+    # so a bare `sketchybar` invocation fails silently with
+    # `command not found` and the pills stay frozen on the last value.
     exec-on-workspace-change = [
       "/bin/bash"
       "-c"
-      "sketchybar --trigger aerospace_workspace_change FOCUSED_WORKSPACE=$AEROSPACE_FOCUSED_WORKSPACE"
+      "${pkgs.sketchybar}/bin/sketchybar --trigger aerospace_workspace_change FOCUSED_WORKSPACE=$AEROSPACE_FOCUSED_WORKSPACE"
     ];
 
     gaps = {
@@ -67,6 +73,61 @@ _: {
       outer.top = 36;
       outer.right = 8;
     };
+
+    # ─── Auto-route apps to workspaces ───────────────────────────────
+    # Fires the moment a new window appears (app launch, second window,
+    # popped-out modal). `if.app-id` matches the macOS bundle identifier;
+    # find an unknown app's ID with `aerospace list-apps` while it's
+    # running. `run` is a list so multiple commands can chain.
+    #
+    # Workspace layout:
+    #   1  terminal     ghostty
+    #   2  editor       vscode, cursor
+    #   3  browser      chrome (all profiles), brave
+    #   4  dev tools    postman, tableplus, docker
+    #   5  comms        slack, mail, discord
+    #   6  notes        obsidian, joplin, apple notes
+    #   7  media        spotify, iina, vlc
+    #   8  meetings     zoom, teams, webex
+    #   9  utilities    1password, activity monitor, meetingbar
+    #
+    # Caveat: bundle IDs for Electron / todesktop apps (e.g. Cursor) can
+    # change between major versions. If an app stops landing in its
+    # workspace after an update, re-check with `aerospace list-apps`.
+    on-window-detected = [
+      { "if".app-id = "com.mitchellh.ghostty";         run = [ "move-node-to-workspace 1" ]; }
+
+      { "if".app-id = "com.microsoft.VSCode";          run = [ "move-node-to-workspace 2" ]; }
+      { "if".app-id = "com.todesktop.230313mzl4w4u92"; run = [ "move-node-to-workspace 2" ]; }
+
+      { "if".app-id = "com.google.Chrome";             run = [ "move-node-to-workspace 3" ]; }
+      { "if".app-id = "com.brave.Browser";             run = [ "move-node-to-workspace 3" ]; }
+
+      { "if".app-id = "com.postmanlabs.mac";           run = [ "move-node-to-workspace 4" ]; }
+      { "if".app-id = "com.tinyapp.TablePlus";         run = [ "move-node-to-workspace 4" ]; }
+      { "if".app-id = "com.docker.docker";             run = [ "move-node-to-workspace 4" ]; }
+
+      { "if".app-id = "com.tinyspeck.slackmacgap";     run = [ "move-node-to-workspace 5" ]; }
+      { "if".app-id = "com.apple.mail";                run = [ "move-node-to-workspace 5" ]; }
+      { "if".app-id = "com.hnc.Discord";               run = [ "move-node-to-workspace 5" ]; }
+
+      { "if".app-id = "md.obsidian";                   run = [ "move-node-to-workspace 6" ]; }
+      { "if".app-id = "net.cozic.joplin-desktop";      run = [ "move-node-to-workspace 6" ]; }
+      { "if".app-id = "com.apple.Notes";               run = [ "move-node-to-workspace 6" ]; }
+
+      { "if".app-id = "com.spotify.client";            run = [ "move-node-to-workspace 7" ]; }
+      { "if".app-id = "com.colliderli.iina";           run = [ "move-node-to-workspace 7" ]; }
+      { "if".app-id = "org.videolan.vlc";              run = [ "move-node-to-workspace 7" ]; }
+
+      { "if".app-id = "us.zoom.xos";                   run = [ "move-node-to-workspace 8" ]; }
+      { "if".app-id = "com.microsoft.teams";           run = [ "move-node-to-workspace 8" ]; }
+      { "if".app-id = "com.microsoft.teams2";          run = [ "move-node-to-workspace 8" ]; }
+      { "if".app-id = "Cisco-Systems.Spark";           run = [ "move-node-to-workspace 8" ]; }
+
+      { "if".app-id = "com.1password.1password";       run = [ "move-node-to-workspace 9" ]; }
+      { "if".app-id = "com.apple.ActivityMonitor";     run = [ "move-node-to-workspace 9" ]; }
+      { "if".app-id = "leits.MeetingBar";              run = [ "move-node-to-workspace 9" ]; }
+    ];
 
     # ─── main mode: only one binding, the WM-mode trigger ────────────
     # Pressing caps+w (Raycast hyper + w) enters wm-mode. Everything else

@@ -75,8 +75,7 @@ reaching for the arrow cluster. Less wrist travel = faster, less pain.
 ### Recovering "real" Caps Lock
 
 If you ever genuinely need Caps Lock (typing an acronym in all caps),
-press **left Shift + right Shift together** and Caps Lock turns on. Press
-them together again to turn it off.
+press **left Shift hold + right Shift click** and Caps Lock toggle.
 
 ---
 
