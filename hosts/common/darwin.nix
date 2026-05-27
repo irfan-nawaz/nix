@@ -32,6 +32,9 @@
       wrtag = prev.wrtag.overrideAttrs (_: {
         doCheck = false;
       });
+      # intelli-shell 3.4.1: test_default_config fails across stable + unstable
+      # due to a changed default config expectation. Upstream bug.
+      intelli-shell = prev.intelli-shell.overrideAttrs (_: { doCheck = false; });
     })
   ];
 
@@ -76,9 +79,69 @@
     primaryUser = username;
     stateVersion = 6;
     defaults = {
+      # Dock
       dock.autohide = true;
+      dock.autohide-delay = 0.0;
+      dock.autohide-time-modifier = 0.2;
+      dock.show-recents = false;
+      dock.mru-spaces = false;        # don't reorder spaces by recent use
+      dock.minimize-to-application = true;
+      dock.persistent-apps = [
+        "/Users/${username}/Applications/Home Manager Apps/Ghostty.app"
+        "/Users/${username}/Applications/Home Manager Apps/Brave Browser.app"
+        "/Users/${username}/Applications/Home Manager Apps/Slack.app"
+        "/Users/${username}/Applications/Home Manager Apps/Cursor.app"
+        "/Users/${username}/Applications/Home Manager Apps/Obsidian.app"
+        "/Users/${username}/Applications/Home Manager Apps/Notion.app"
+      ];
+
+      # Finder
       finder.AppleShowAllExtensions = true;
+      finder.AppleShowAllFiles = true; # show hidden files
+      finder.ShowPathbar = true;
+      finder.ShowStatusBar = true;
+      finder.FXDefaultSearchScope = "SCcf"; # search current folder by default
+      finder.FXPreferredViewStyle = "clmv"; # column view
+      finder.FXEnableExtensionChangeWarning = false;
+      finder._FXShowPosixPathInTitle = true;
+      finder.CreateDesktop = false;   # hide desktop icons
+
+      # Global — appearance & input
+      NSGlobalDomain.AppleInterfaceStyle = "Dark";
       NSGlobalDomain.ApplePressAndHoldEnabled = false;
+      NSGlobalDomain.KeyRepeat = 2;
+      NSGlobalDomain.InitialKeyRepeat = 15;
+      NSGlobalDomain.AppleKeyboardUIMode = 3; # full keyboard navigation
+      NSGlobalDomain.NSAutomaticCapitalizationEnabled = false;
+      NSGlobalDomain.NSAutomaticDashSubstitutionEnabled = false;
+      NSGlobalDomain.NSAutomaticPeriodSubstitutionEnabled = false;
+      NSGlobalDomain.NSAutomaticQuoteSubstitutionEnabled = false;
+      NSGlobalDomain.NSAutomaticSpellingCorrectionEnabled = false;
+      NSGlobalDomain.NSNavPanelExpandedStateForSaveMode = true;
+      NSGlobalDomain.NSNavPanelExpandedStateForSaveMode2 = true;
+      NSGlobalDomain.PMPrintingExpandedStateForPrint = true;
+      NSGlobalDomain.NSDocumentSaveNewDocumentsToCloud = false;
+
+      # Trackpad
+      trackpad.Clicking = true;       # tap to click
+      trackpad.TrackpadThreeFingerDrag = true;
+
+      # Screensaver / lock
+      screensaver.askForPassword = true;
+      screensaver.askForPasswordDelay = 0;
+
+      # Screenshots — dedicated folder, PNG format
+      screencapture.location = "/Users/${username}/Desktop/screenshots";
+      screencapture.type = "png";
+
+      # Menu bar
+      controlcenter.BatteryShowPercentage = true;
+
+      # Login
+      loginwindow.GuestEnabled = false;
+
+# Scrollbar click jumps to position
+      NSGlobalDomain.AppleScrollerPagingBehavior = true;
     };
   };
 
@@ -136,6 +199,8 @@
   fonts.packages = with pkgs; [
     nerd-fonts.jetbrains-mono
     nerd-fonts.fira-code
+    nerd-fonts.hack
+    nerd-fonts.meslo-lg
     nerd-fonts.symbols-only
   ];
 
@@ -171,5 +236,6 @@
       chown ${username}:staff "/Users/${username}/.ssh"
       chmod 0700 "/Users/${username}/.ssh"
     fi
+    mkdir -p "/Users/${username}/Desktop/screenshots"
   '';
 }
