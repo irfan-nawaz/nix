@@ -69,6 +69,33 @@ The flake reads files via git, not the filesystem. New files must be `git add`-e
 `flake.nix` must match a file name in `home/users/`. Otherwise the import
 fails before any module evaluation.
 
+## Nix-managed GUI app crashes after accepting an in-app upgrade
+
+Symptom: an app (Raycast, browsers, etc.) prompts for an update, you accept,
+and afterward it opens and exits immediately. `codesign -v
+~/Applications/Home\ Manager\ Apps/<App>.app` prints `a sealed resource is
+missing or invalid`.
+
+Cause: the app's self-updater wrote new files into the nix-store-backed bundle,
+breaking its code signature. macOS refuses to run it.
+
+Fix: restore the nix-managed version by running home-manager switch. It
+re-links the clean bundle from the store.
+
+Prevention: **never accept in-app upgrade prompts for nix-managed apps.** To
+get a newer version, update the relevant flake input instead:
+
+```bash
+nix flake update nixpkgs-darwin --flake /path/to/nix
+# then home-manager switch
+```
+
+You can check what version you'll get before switching:
+
+```bash
+nix eval github:NixOS/nixpkgs/nixpkgs-unstable#<pkg>.version
+```
+
 ## Slow rebuilds
 
 - Wire Determinate Nix to the nix-community Cachix substituter
