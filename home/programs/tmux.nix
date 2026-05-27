@@ -40,10 +40,6 @@
       bind k select-pane -U
       bind l select-pane -R
 
-      # one empty spacer line between pane content and the catppuccin bar
-      set -g status 2
-      set -g status-format[1] ""
-
       # keep tmux server alive when all sessions detach so lazily-created
       # background sessions survive across ghostty closes
       set -g exit-empty off
@@ -70,12 +66,19 @@
     plugins = with pkgs.tmuxPlugins; [
       sensible
       yank
+      # battery must load before catppuccin so #{battery_percentage} /
+      # #{battery_icon} are defined when catppuccin's status modules run.
+      battery
       {
         plugin = catppuccin;
         extraConfig = ''
           set -g @catppuccin_flavor "mocha"
-          set -g @catppuccin_window_status_style "rounded"
+          set -g @catppuccin_window_status_style "basic"
           set -g @catppuccin_status_background "default"
+          set -g @catppuccin_date_time_text " %a %H:%M"
+          # Catppuccin 2.x does not populate status-left/right by default.
+          set -g status-left "#{E:@catppuccin_status_session} "
+          set -g status-right "#{E:@catppuccin_status_application} #{E:@catppuccin_status_date_time}"
         '';
       }
     ];
