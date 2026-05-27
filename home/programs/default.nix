@@ -68,6 +68,7 @@
     ./wtfutil.nix
 
     # Tier C — specialised stubs (uncommon / overlap with already-configured tools)
+    ./notifications.nix
     ./restic.nix
     ./taskwarrior.nix
     ./vscode.nix

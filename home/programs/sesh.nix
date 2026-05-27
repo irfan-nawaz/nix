@@ -1,13 +1,19 @@
 # Single source of truth for the tmux session ecosystem.
 #
-# Each entry in `sessions` below produces three coordinated artifacts:
+# Each entry in `sessions` below produces two coordinated artifacts:
 #
 #   1. A `[[session]]` block in ~/.config/sesh/sesh.toml so the session
 #      appears in the fuzzy picker (`prefix s`, bound in tmux.nix).
 #   2. If the entry has a `command`, a `case` branch in the dispatcher
 #      script `tmux-session-launcher` that `respawn-pane -k`s the
 #      session's pane to that command directly.
-#   3. A tmux `session-created` hook that invokes the dispatcher.
+#
+# Project sessions (~/cp/*, ~/pp/*) are handled differently:
+#   - sesh auto-discovers them via [[path]] config — no per-project entry.
+#   - The dispatcher detects them by path prefix and applies ONE standard
+#     4-window layout: shell · claude · git · run.
+#   - Adding a project = mkdir. No nix change needed.
+#   - When moving to nvim, update standardProjectLayout in one place.
 #
 # Why dispatch via hook + `respawn-pane` instead of sesh's own
 # `startup_command`? sesh's `startup_command` uses `tmux send-keys` --
@@ -16,18 +22,8 @@
 # shell isn't ready when the keystrokes land, init swallows the
 # input, and the command never runs. `respawn-pane -k` replaces the
 # pane's command directly: no shell, no typing, no race.
-#
-# Add a session only when its tool is in `home.packages` and its
-# data dir is declared. There is no shell fallback -- if a tool
-# fails the pane dies (textbook tmux semantics). Failing-loud forces
-# us to declare preconditions instead of papering over them.
 
 { pkgs, lib, ... }:
-# Note: project picker is bound to prefix+P (capital) in tmux.nix.
-# Note: the `notes` session's `zk edit --interactive` needs a notebook
-# marker at ~/Documents/zk/.zk. That activation lives in zk.nix
-# (alongside the rest of zk's config), not here.
-
 let
   sessions = {
     main    = { path = "~"; };
@@ -41,6 +37,18 @@ let
     clock   = { path = "~"; command = "clock-rs"; };
     zones   = { path = "~"; command = "tz -w -m"; };
   };
+
+  # Standard 4-window project layout applied to every ~/cp/* and ~/pp/* session.
+  # Uses $pane_path (resolved in dispatcher before this runs) for working dirs.
+  # Uses :^ (first window) instead of :0 so base-index 1 is respected.
+  # Window 0 is shell today; swap the rename line to respawn nvim when ready.
+  standardProjectLayout = ''
+    tmux rename-window -t "$name:^" shell
+    tmux new-window    -t "$name:"  -n claude -c "$pane_path" claude
+    tmux new-window    -t "$name:"  -n git    -c "$pane_path" lazygit
+    tmux new-window    -t "$name:"  -n run    -c "$pane_path"
+    tmux select-window -t "$name:^"
+  '';
 
   toToml = name: s: ''
     [[session]]
@@ -59,6 +67,19 @@ let
 
   tmuxSessionLauncher = pkgs.writeShellScriptBin "tmux-session-launcher" ''
     name="$1"
+
+    # Project sessions: any session whose starting pane lives under ~/cp or ~/pp.
+    # One standard layout applied to all — no per-project case needed.
+    pane_path=$(tmux display-message -p -t "$name" '#{pane_current_path}' 2>/dev/null)
+    home="$HOME"
+    case "$pane_path" in
+      "$home"/cp/*|"$home"/pp/*)
+        ${standardProjectLayout}
+        exit 0
+        ;;
+    esac
+
+    # Named sessions with dedicated tools.
     case "$name" in
     ${dispatcherCases}
     esac
@@ -67,11 +88,14 @@ in
 {
   home.packages = [ tmuxSessionLauncher ];
 
-  xdg.configFile."sesh/sesh.toml".text = seshToml;
+  xdg.configFile."sesh/sesh.toml".text = ''
+    ${seshToml}
 
-  # The tmux hook lives next to the sessions it dispatches. HM merges
-  # `programs.tmux.extraConfig` across modules, so this appends to
-  # the tmux config defined in tmux.nix.
+    # Auto-discover all immediate subdirectories of ~/cp and ~/pp as sessions.
+    [[path]]
+    paths = ["~/cp", "~/pp"]
+  '';
+
   programs.tmux.extraConfig = ''
     set-hook -ga session-created 'run-shell "tmux-session-launcher #{hook_session_name}"'
   '';

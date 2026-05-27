@@ -133,7 +133,10 @@
     # Pressing caps+w (Raycast hyper + w) enters wm-mode. Everything else
     # in main mode is unbound, so normal typing is unaffected.
     mode.main.binding = {
-      cmd-ctrl-alt-shift-w = "mode wm";
+      cmd-ctrl-alt-shift-w = [
+        "mode wm"
+        "exec-and-forget ${pkgs.sketchybar}/bin/sketchybar --trigger aerospace_mode MODE=wm"
+      ];
     };
 
     # ─── wm mode: sticky vim-style normal mode for window ops ────────
@@ -191,21 +194,42 @@
       # Hop to the previous workspace (Tab analog).
       tab = "workspace-back-and-forth";
 
-      # Drop into service mode (reload-config / rebalance / etc).
-      semicolon = "mode service";
+      # Drop into service mode.
+      semicolon = [
+        "mode service"
+        "exec-and-forget ${pkgs.sketchybar}/bin/sketchybar --trigger aerospace_mode MODE=service"
+      ];
 
       # Exit wm-mode back to normal typing.
-      esc = "mode main";
-      enter = "mode main";
+      esc = [
+        "mode main"
+        "exec-and-forget ${pkgs.sketchybar}/bin/sketchybar --trigger aerospace_mode MODE=main"
+      ];
+      enter = [
+        "mode main"
+        "exec-and-forget ${pkgs.sketchybar}/bin/sketchybar --trigger aerospace_mode MODE=main"
+      ];
     };
 
     # ─── service mode: rare workspace-tree ops ───────────────────────
     # Entered from wm-mode via `;`. esc reloads config, r rebalances.
     mode.service.binding = {
-      esc = [ "reload-config" "mode main" ];
-      r = [ "flatten-workspace-tree" "mode main" ];        # rebalance
-      f = [ "layout floating tiling" "mode main" ];        # toggle layout
-      backspace = [ "close-all-windows-but-current" "mode main" ];
+      esc = [
+        "reload-config" "mode main"
+        "exec-and-forget ${pkgs.sketchybar}/bin/sketchybar --trigger aerospace_mode MODE=main"
+      ];
+      r = [
+        "flatten-workspace-tree" "mode main"
+        "exec-and-forget ${pkgs.sketchybar}/bin/sketchybar --trigger aerospace_mode MODE=main"
+      ];
+      f = [
+        "layout floating tiling" "mode main"
+        "exec-and-forget ${pkgs.sketchybar}/bin/sketchybar --trigger aerospace_mode MODE=main"
+      ];
+      backspace = [
+        "close-all-windows-but-current" "mode main"
+        "exec-and-forget ${pkgs.sketchybar}/bin/sketchybar --trigger aerospace_mode MODE=main"
+      ];
     };
   };
 }

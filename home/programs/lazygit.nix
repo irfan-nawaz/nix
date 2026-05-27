@@ -17,10 +17,12 @@
       nerdFontsVersion = "3";
     };
     git = {
-      paging = {
-        colorArg = "always";
-        pager = "delta --dark --paging=never";
-      };
+      pagers = [
+        {
+          colorArg = "always";
+          pager = "delta --dark --paging=never";
+        }
+      ];
       autoFetch = true;
       autoRefresh = true;
       fetchAll = true;

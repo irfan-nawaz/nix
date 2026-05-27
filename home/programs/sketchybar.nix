@@ -45,6 +45,7 @@
       # Sketchybar requires custom events to be declared before items
       # can subscribe / `--trigger` can fire them.
       sketchybar --add event aerospace_workspace_change
+      sketchybar --add event aerospace_mode
       sketchybar --add event timew_update
 
       # ─── Bar ───────────────────────────────────────────────────────
@@ -77,6 +78,15 @@
                        click_script="aerospace workspace $sid" \
                        script="$PLUGIN_DIR/aerospace.sh $sid"
       done
+
+      # ─── WM mode indicator (left, between workspace pills and app) ───
+      # Hidden in main mode; shows "WM" (yellow) or "SVC" (red) otherwise.
+      # Driven by aerospace_mode event fired from aerospace.nix bindings.
+      sketchybar --add item wm_mode left \
+                 --subscribe wm_mode aerospace_mode \
+                 --set wm_mode drawing=off \
+                       updates=on \
+                       script="$PLUGIN_DIR/wm_mode.sh"
 
       # ─── Front app (left, after workspace pills) ───────────────────
       # Shows the currently-focused app's name. Sketchybar emits the
@@ -115,6 +125,9 @@
                        script="$PLUGIN_DIR/timew.sh" \
                        click_script="timew stop"
 
+      sketchybar --add item uair right \
+                 --set uair drawing=off
+
       sketchybar --add item task_count right \
                  --subscribe task_count timew_update \
                  --set task_count update_freq=60 \
@@ -150,6 +163,24 @@
           background.drawing=off \
           label.color=0xff6c7086
       fi
+    '';
+  };
+
+  xdg.configFile."sketchybar/plugins/wm_mode.sh" = {
+    executable = true;
+    text = ''
+      #!/usr/bin/env bash
+      case "$MODE" in
+        wm)
+          sketchybar --set "$NAME" drawing=on label="WM" label.color=0xfffab387
+          ;;
+        service)
+          sketchybar --set "$NAME" drawing=on label="SVC" label.color=0xfff38ba8
+          ;;
+        *)
+          sketchybar --set "$NAME" drawing=off
+          ;;
+      esac
     '';
   };
 
