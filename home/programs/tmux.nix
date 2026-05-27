@@ -29,6 +29,11 @@
       # reload config
       bind r source-file ~/.config/tmux/tmux.conf \; display "tmux.conf reloaded"
 
+      # vi copy mode bindings
+      bind-key -T copy-mode-vi v send-keys -X begin-selection
+      bind-key -T copy-mode-vi C-v send-keys -X rectangle-toggle
+      bind-key -T copy-mode-vi y send-keys -X copy-selection-and-cancel
+
       # vim-style pane navigation
       bind h select-pane -L
       bind j select-pane -D
@@ -47,11 +52,11 @@
       # sesh picker. -H hides the currently-attached session. Don't add
       # -i (icons add ANSI bytes that break `sesh connect`) or -d
       # (path-dedupe hides sessions sharing ~).
-      bind-key "s" run-shell "sesh connect $(sesh list -H | fzf-tmux -p 55%,60%)"
+      bind-key "s" run-shell "sesh connect \$(sesh list -H | fzf-tmux -p 55%,60%) 2>/dev/null || true"
       bind-key "K" run-shell "sesh last"
 
       # project picker: all subdirs under ~/cp and ~/pp → new sesh session
-      bind-key "p" run-shell "sesh connect \$(find ~/cp ~/pp -mindepth 1 -maxdepth 1 -type d | fzf-tmux -p 65%,70% --prompt='project> ')"
+      bind-key "P" run-shell "sesh connect \$(find ~/cp ~/pp -mindepth 1 -maxdepth 1 -type d | fzf-tmux -p 65%,70% --prompt='project> ') 2>/dev/null || true"
     '';
 
     # sesh + the session-created hook (in sesh.nix) own session

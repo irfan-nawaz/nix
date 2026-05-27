@@ -23,6 +23,7 @@
 # us to declare preconditions instead of papering over them.
 
 { pkgs, lib, ... }:
+# Note: project picker is bound to prefix+P (capital) in tmux.nix.
 # Note: the `notes` session's `zk edit --interactive` needs a notebook
 # marker at ~/Documents/zk/.zk. That activation lives in zk.nix
 # (alongside the rest of zk's config), not here.
