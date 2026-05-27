@@ -140,8 +140,30 @@
       # Login
       loginwindow.GuestEnabled = false;
 
-# Scrollbar click jumps to position
+      # Scrollbar click jumps to position
       NSGlobalDomain.AppleScrollerPagingBehavior = true;
+
+      # Graphite accent — neutral, doesn't compete with Catppuccin Mocha colors
+      CustomUserPreferences."NSGlobalDomain".AppleAccentColor = -1;
+      CustomUserPreferences."NSGlobalDomain".AppleHighlightColor = "0.705882 0.745098 0.996078 Other";
+
+      # Clear dark icon and widget style (requires logout to apply)
+      NSGlobalDomain.AppleIconAppearanceTheme = "ClearDark";
+
+      # Each display has its own independent spaces (essential with Aerospace)
+      spaces.spans-displays = false;
+
+      # No surprise OS updates mid-work
+      SoftwareUpdate.AutomaticallyInstallMacOSUpdates = false;
+
+      # Removes "are you sure?" quarantine prompt on downloaded apps
+      LaunchServices.LSQuarantine = false;
+
+      # F1-F12 work as real function keys — better for dev shortcuts
+      hitoolbox.AppleFnUsageType = "Do Nothing";
+
+      # Show CPU graph in dock when Activity Monitor is open
+      ActivityMonitor.IconType = 5;
     };
   };
 

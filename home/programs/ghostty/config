@@ -6,7 +6,7 @@ background-opacity = 0.95
 macos-titlebar-style = tabs
 window-padding-x = 10
 window-padding-y = 8
-theme = TokyoNight
+theme = Catppuccin Mocha
 
 # Every new window/tab attaches to the always-on tmux session `main`
 # (creating it on first launch). Other sessions are declared in

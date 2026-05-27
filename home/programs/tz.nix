@@ -2,7 +2,7 @@
 # Run with -w to refresh every minute; -m for 24h format.
 { ... }:
 {
-  xdg.configFile."tz/tz.toml".text = ''
+  xdg.configFile."tz/conf.toml".text = ''
     [[zones]]
     name = "Bengaluru"
     tz   = "Asia/Kolkata"

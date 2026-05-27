@@ -40,6 +40,10 @@
       bind k select-pane -U
       bind l select-pane -R
 
+      # one empty spacer line between pane content and the catppuccin bar
+      set -g status 2
+      set -g status-format[1] ""
+
       # keep tmux server alive when all sessions detach so lazily-created
       # background sessions survive across ghostty closes
       set -g exit-empty off
@@ -66,6 +70,14 @@
     plugins = with pkgs.tmuxPlugins; [
       sensible
       yank
+      {
+        plugin = catppuccin;
+        extraConfig = ''
+          set -g @catppuccin_flavor "mocha"
+          set -g @catppuccin_window_status_style "rounded"
+          set -g @catppuccin_status_background "default"
+        '';
+      }
     ];
   };
 }
