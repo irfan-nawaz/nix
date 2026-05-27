@@ -38,6 +38,7 @@ let
     journal = { path = "~/Documents/journal"; command = "jrnl --edit"; };
     sys     = { path = "~"; command = "btop"; };
     clock   = { path = "~"; command = "clock-rs"; };
+    zones   = { path = "~"; command = "tz -w -m"; };
   };
 
   toToml = name: s: ''

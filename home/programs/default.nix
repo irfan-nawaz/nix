@@ -43,6 +43,7 @@
     ./tmux.nix
     ./yazi.nix
     ./yt-dlp.nix
+    ./tz.nix
     ./zk.nix
 
     # Tier A — user-data-dependent stubs (TODO: fill placeholders + enable)
