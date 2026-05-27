@@ -29,7 +29,6 @@ in
       meetingbar
       postman
       notion-app
-      code-cursor
       ghostty-bin
     ];
   };
