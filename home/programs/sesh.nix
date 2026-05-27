@@ -32,7 +32,7 @@ let
     main    = { path = "~"; };
     nix     = { path = "~/nix"; command = "nvim ."; };
     claude  = { path = "~/nix"; command = "claude"; };
-    notes   = { path = "~/Documents/zk"; command = "zk edit --interactive"; };
+    notes   = { path = "~/Documents/zk"; command = "sh -c 'while zk edit --interactive; do true; done'"; };
     tasks   = { path = "~"; command = "taskwarrior-tui"; };
     habits  = { path = "~"; command = "dijo"; };
     journal = { path = "~/Documents/journal"; command = "jrnl --edit"; };
