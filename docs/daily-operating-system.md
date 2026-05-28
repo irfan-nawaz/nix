@@ -56,19 +56,19 @@ uairctl toggle
 ```
 25 min work, 5 min break. The `○ 24m 30s` counter appears in your sketchybar.
 
-**2. Start time tracking**
+**2. Start tracking by starting a task**
 
-Always track what you're working on:
+`task start` automatically fires `timew start` via the on-modify hook —
+no separate timew command needed:
 ```sh
-timew start "task name or project"
+task <id> start
 ```
-Examples:
+The timew pill in sketchybar goes live instantly, labelled with the
+task description and project. Stop tracking by stopping or completing:
 ```sh
-timew start "tzero auth refactor"
-timew start "nix config"
-timew start "code review"
+task <id> stop   # pause work, keep task pending
+task <id> done   # complete it (also stops timew)
 ```
-The timew pill in sketchybar goes live instantly.
 
 **3. Open your project session**
 
@@ -83,9 +83,9 @@ Or pick any named session:
 
 A hard stop mid-afternoon to prevent drift. Takes 5 min.
 
-**1. Stop the current timer and check how time was spent**
+**1. Stop the current task and check how time was spent**
 ```sh
-timew stop
+task <id> stop
 timew summary :day
 ```
 Are you spending time where you planned?
@@ -109,9 +109,9 @@ timew start "afternoon session"
 
 Sketchybar fires a notification at 9:00 PM. Start winding down at 8:30.
 
-**1. Stop the timer**
+**1. Stop the current task**
 ```sh
-timew stop
+task <id> stop
 ```
 
 **2. Mark completed tasks done**
@@ -225,14 +225,16 @@ task summary                              # breakdown by project/tag
 
 ## Time Tracking Cheatsheet
 
+Tracking is driven by taskwarrior — never run `timew start/stop` manually.
+
 ```sh
-timew start "label"       # start tracking
-timew stop                # stop
+task <id> start           # starts timew automatically (hook)
+task <id> stop            # stops timew automatically (hook)
+task <id> done            # completes task + stops timew (hook)
 timew summary :day        # today's breakdown
 timew summary :week       # this week
 timew summary :month      # this month
-timew tags                # see all labels you've used
-timew continue            # resume last interval
+timew tags                # see all labels used
 ```
 
 ---
@@ -253,5 +255,5 @@ timew continue            # resume last interval
 ## The One Rule
 
 **Never leave timew stopped during work hours.**
-If the sketchybar timew pill is dark, you're not tracking. Start it.
-The 12:30 PM idle-nudge notification fires every 20 min if nothing is running — that's your reminder.
+If the sketchybar timew pill is dark, no task is active. Run `task <id> start`.
+The idle-nudge notification fires every 20 min if nothing is running — that's your reminder.
