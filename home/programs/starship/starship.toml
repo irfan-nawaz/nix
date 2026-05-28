@@ -1,7 +1,8 @@
 add_newline = true
 palette = "catppuccin_mocha"
 
-format = "$directory$git_branch$git_status$nodejs$python$nix_shell$cmd_duration$line_break$character"
+format = "$directory$git_branch$git_status$nodejs$python$nix_shell$line_break$character"
+right_format = "$cmd_duration"
 
 [directory]
 truncation_length = 3
@@ -12,7 +13,13 @@ style = "bold lavender"
 style = "bold mauve"
 
 [git_status]
-stashed = "*"
+ahead    = "⇡${count}"
+behind   = "⇣${count}"
+diverged = "⇕⇡${ahead_count}⇣${behind_count}"
+untracked = "?"
+modified  = "!"
+staged    = "+"
+stashed   = "*"
 style = "bold red"
 
 [cmd_duration]
