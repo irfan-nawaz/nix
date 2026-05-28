@@ -43,10 +43,28 @@ let
   # Uses :^ (first window) instead of :0 so base-index 1 is respected.
   # Window 0 is shell today; swap the rename line to respawn nvim when ready.
   standardProjectLayout = ''
+    lock() {
+      tmux set-window-option -t "$1" allow-rename    off
+      tmux set-window-option -t "$1" automatic-rename off
+    }
+    new_locked() {
+      local win
+      win=$(tmux new-window -t "$name:" -n "$1" -c "$pane_path" -P -F '#{window_index}')
+      lock "$name:$win"
+      echo "$win"
+    }
+
     tmux rename-window -t "$name:^" shell
-    tmux new-window    -t "$name:"  -n claude -c "$pane_path" claude
-    tmux new-window    -t "$name:"  -n git    -c "$pane_path" lazygit
-    tmux new-window    -t "$name:"  -n run    -c "$pane_path"
+    lock "$name:^"
+
+    claude_win=$(new_locked claude)
+    tmux respawn-pane -k -t "$name:$claude_win" claude
+
+    git_win=$(new_locked git)
+    tmux respawn-pane -k -t "$name:$git_win" lazygit
+
+    new_locked run
+
     tmux select-window -t "$name:^"
   '';
 

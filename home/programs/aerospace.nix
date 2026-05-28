@@ -127,6 +127,17 @@
       { "if".app-id = "com.1password.1password";       run = [ "move-node-to-workspace 9" ]; }
       { "if".app-id = "com.apple.ActivityMonitor";     run = [ "move-node-to-workspace 9" ]; }
       { "if".app-id = "leits.MeetingBar";              run = [ "move-node-to-workspace 9" ]; }
+
+      # ── Floating rules ──────────────────────────────────────────────
+      # Small dialogs and system utilities that should never tile.
+      # layout floating runs after any workspace rule above, so e.g.
+      # System Settings lands on its workspace AND floats there.
+      { "if".app-id = "com.apple.systempreferences";   run = [ "layout floating" ]; }
+      { "if".app-id = "com.apple.finder";              run = [ "layout floating" ]; }
+      { "if".app-id = "com.apple.calculator";          run = [ "layout floating" ]; }
+      { "if".app-id = "com.apple.keychainaccess";      run = [ "layout floating" ]; }
+      { "if".app-id = "com.apple.installer";           run = [ "layout floating" ]; }
+      { "if".app-id = "com.apple.screencapture";       run = [ "layout floating" ]; }
     ];
 
     # ─── main mode: only one binding, the WM-mode trigger ────────────
