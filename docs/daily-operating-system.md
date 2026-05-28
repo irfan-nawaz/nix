@@ -127,8 +127,8 @@ How many of your top 3 are done? Adjust if needed.
 **3. Take a proper break**
 Step away from the screen. 10–15 min. No phone. Return, then restart:
 ```sh
+task <id> start
 uairctl toggle
-timew start "afternoon session"
 ```
 
 ---
@@ -277,6 +277,88 @@ timew tags                # see all labels used
 | `prefix+1..9` | Switch window within session |
 | `prefix+\|` | Split pane horizontally |
 | `prefix+-` | Split pane vertically |
+
+---
+
+## vit Cheatsheet
+
+Visual interactive taskwarrior — better than `task next` for review sessions.
+
+```sh
+vit              # open full task list
+vit +today       # filter to today's tasks
+vit +work        # filter by tag
+vit project:foo  # filter by project
+```
+
+Inside vit:
+
+| Key | Action |
+|---|---|
+| `Enter` | Edit selected task |
+| `d` | Mark done |
+| `s` | Start task |
+| `S` | Stop task |
+| `D` | Delete task |
+| `u` | Undo |
+| `m` | Modify |
+| `a` | Add new task |
+| `/` | Search / filter |
+| `q` | Quit |
+
+---
+
+## jrnl Cheatsheet
+
+```sh
+jrnl                          # open editor for a new entry (today)
+jrnl "quick note without editor"
+jrnl -n 5                     # show last 5 entries
+jrnl today                    # show today's entries
+jrnl yesterday                # show yesterday's entries
+jrnl --edit                   # edit last entry
+jrnl @work                    # filter entries tagged @work
+jrnl -from "last monday"      # entries since last monday
+jrnl -to "yesterday"          # entries up to yesterday
+```
+
+Tag anything in an entry with `@tag` — searchable later.
+
+---
+
+## dijo Cheatsheet
+
+```sh
+dijo             # open the habit tracker TUI
+```
+
+Inside dijo:
+
+| Key | Action |
+|---|---|
+| `a` | Add a new habit |
+| `d` | Delete selected habit |
+| `n` / `p` | Next / previous month |
+| `k` / `j` | Move up / down |
+| `v` | Toggle today's entry |
+| `q` | Quit |
+
+Habits are stored in `~/.local/share/dijo/`. Track one habit per meaningful behaviour — don't over-track.
+
+---
+
+## zk Cheatsheet
+
+```sh
+zk new "note title"           # create a new note
+zk edit --interactive         # fuzzy search and open a note
+zk list                       # list all notes
+zk list --match "keyword"     # search notes by content
+zk list --tag "tag"           # filter by tag
+zk graph                      # show note link graph
+```
+
+Notes live in `~/Documents/zk`. Use `[[wikilinks]]` inside notes to link them.
 
 ---
 
