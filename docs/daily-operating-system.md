@@ -337,15 +337,21 @@ Tag anything in an entry with `@tag` — searchable later.
 dijo             # open the habit tracker TUI
 ```
 
-Inside dijo:
+Inside dijo, type commands at the prompt:
+
+| Command | Action |
+|---|---|
+| `add <name> <goal>` | Add a new habit (goal = times per day, usually 1) |
+| `delete <name>` | Delete a habit |
+| `track <name>` | Log today's entry for a habit |
+| `untrack <name>` | Undo today's entry |
+
+Navigation:
 
 | Key | Action |
 |---|---|
-| `a` | Add a new habit |
-| `d` | Delete selected habit |
 | `n` / `p` | Next / previous month |
 | `k` / `j` | Move up / down |
-| `v` | Toggle today's entry |
 | `q` | Quit |
 
 Habits are stored in `~/.local/share/dijo/`. Track one habit per meaningful behaviour — don't over-track.
