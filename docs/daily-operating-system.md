@@ -7,6 +7,34 @@ Tools in play: `task` (tasks), `timew` (time tracking), `dijo` (habits),
 
 ---
 
+## Day Schedule
+
+```
+12:00 – 12:30   Morning ritual      plan top 3, journal, task review
+12:30 – 1:30    Call 1
+─────────────────────────────────────────────────────────────────────
+1:30  – 3:30    Focus Block 1       deep work — hardest task first
+3:30  – 4:30    Lunch
+─────────────────────────────────────────────────────────────────────
+4:30  – 6:30    Focus Block 2       second priority task
+6:30  – 7:30    Buffer              reviews, async replies, light admin
+7:30  – 8:30    Call 2
+─────────────────────────────────────────────────────────────────────
+8:30  – 9:00    Wind-down           journal, task close, dijo
+```
+
+**Pomodoro rhythm inside each 2-hour focus block:**
+```
+25m focus → 5m break → 25m focus → 5m break → 25m focus → done
+```
+3 pomodoros per block. Start each block with:
+```sh
+task <id> start
+uairctl toggle
+```
+
+---
+
 ## Morning Ritual — before 12:00 PM
 
 Do this before you open any work app. Takes ~10 min.
@@ -79,7 +107,7 @@ Or pick any named session:
 
 ---
 
-## Mid-Day Ritual — 3:30 PM (halfway point)
+## Lunch Break — 3:30 PM (halfway point)
 
 A hard stop mid-afternoon to prevent drift. Takes 5 min.
 
