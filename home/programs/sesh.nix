@@ -30,7 +30,7 @@ let
     nix     = { path = "~/nix"; command = "nvim ."; };
     claude  = { path = "~/nix"; command = "claude"; };
     notes   = { path = "~/Documents/zk"; command = "sh -c 'while zk edit --interactive; do true; done'"; };
-    tasks   = { path = "~"; command = "taskwarrior-tui"; };
+    tasks   = { path = "~"; };
     habits  = { path = "~"; command = "dijo"; };
     journal = { path = "~/Documents/journal"; command = "jrnl --edit"; };
     sys     = { path = "~"; command = "btop"; };
@@ -96,6 +96,16 @@ let
         exit 0
         ;;
     esac
+
+    # tasks session: two windows — tui (taskwarrior-tui) and vit.
+    if [[ "$name" == "tasks" ]]; then
+      tmux rename-window -t "$name:^" tui
+      tmux respawn-pane -k -t "$name:^" taskwarrior-tui
+      vit_win=$(tmux new-window -t "$name:" -n vit -c "$HOME" -P -F '#{window_index}')
+      tmux respawn-pane -k -t "$name:$vit_win" vit
+      tmux select-window -t "$name:^"
+      exit 0
+    fi
 
     # Named sessions with dedicated tools.
     case "$name" in
