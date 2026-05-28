@@ -41,21 +41,24 @@ Do this before you open any work app. Takes ~10 min.
 
 **1. Review open tasks**
 ```sh
-task next
+vit
 ```
-Shows your highest-priority pending tasks. Scan what today looks like.
+Full interactive view of all pending tasks. Better than `task next` for
+planning — you can see everything, filter, and edit in one place.
 
-**2. Check what's overdue**
+**2. Check what's overdue and plan your top 3**
+Inside vit, filter to overdue tasks:
 ```sh
-task overdue
+vit +OVERDUE
 ```
-Anything here needs to be done today or explicitly pushed to tomorrow.
-
-**3. Plan your top 3 for today**
-Pick 3 tasks max that MUST be done today. Tag them:
+Pick 3 tasks max that MUST be done today. Tag them inside vit (`m` to
+modify) or from the shell:
 ```sh
 task <id> modify +today
-task next +today
+```
+Then confirm your today list:
+```sh
+vit +today
 ```
 
 **4. Log the journal**
@@ -120,9 +123,9 @@ Are you spending time where you planned?
 
 **2. Check task progress**
 ```sh
-task +today
+vit +today
 ```
-How many of your top 3 are done? Adjust if needed.
+How many of your top 3 are done? Adjust if needed — edit inline with `m`.
 
 **3. Take a proper break**
 Step away from the screen. 10–15 min. No phone. Return, then restart:
@@ -185,14 +188,16 @@ Which projects got the most time? Does it match where you wanted to focus?
 
 **2. Review all tasks**
 ```sh
-task all status:pending
+vit
 ```
-Anything stale (no activity for 7+ days)?
+Scan everything pending. Use `D` to delete stale tasks, `m` to
+reschedule — all without leaving vit.
 
 **3. Purge or reschedule stale tasks**
+Inside vit: `D` to delete, `m` → modify due date. Or from shell:
 ```sh
-task <id> delete        # if it's no longer relevant
-task <id> modify due:someday  # if it's real but not urgent
+task <id> delete
+task <id> modify due:someday
 ```
 
 **4. Check habit streaks**
