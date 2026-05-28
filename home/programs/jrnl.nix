@@ -1,23 +1,41 @@
-# jrnl: single default journal at ~/Documents/journal/. Multiple
-# journals can be added later under `journals.<name>`.
-{ lib, ... }:
+# jrnl: single default journal at ~/Documents/journal/.
+#
+# programs.jrnl.settings is intentionally NOT used — the HM module writes
+# a read-only nix store symlink and jrnl tries to write back to its config
+# at runtime, causing a PermissionError. Instead, home.activation writes
+# the config as a real mutable file on first run. jrnl can then update it
+# freely; subsequent rebuilds leave the existing mutable file untouched.
+{ pkgs, lib, ... }:
+let
+  jrnlConfig = pkgs.writeText "jrnl.yaml" ''
+    default_hour: 9
+    default_minute: 0
+    editor: nvim
+    encrypt: false
+    highlight: true
+    journals:
+      default:
+        journal: ~/Documents/journal/default.txt
+    linewrap: 79
+    template: false
+    timeformat: '%Y-%m-%d %H:%M'
+  '';
+in
 {
-  programs.jrnl.settings = {
-    editor = "nvim";
-    encrypt = false;
-    template = false;
-    default_hour = 9;
-    default_minute = 0;
-    timeformat = "%Y-%m-%d %H:%M";
-    highlight = true;
-    linewrap = 79;
-    journals.default.journal = "~/Documents/journal/default.txt";
-  };
+  home.activation.jrnlConfig = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    config_dir="$HOME/.config/jrnl"
+    config_file="$config_dir/jrnl.yaml"
+    # Write mutable config on first run. If a read-only symlink exists from
+    # a previous HM generation, replace it with a writable copy.
+    if [ ! -f "$config_file" ] || [ -L "$config_file" ]; then
+      mkdir -p "$config_dir"
+      rm -f "$config_file"
+      cp ${jrnlConfig} "$config_file"
+      chmod 644 "$config_file"
+    fi
+  '';
 
-  # The `journal` sesh session sets path = ~/Documents/journal, so the
-  # directory must exist before tmux tries to chdir into it. jrnl itself
-  # creates the .txt file lazily on first entry; the parent dir is on us.
   home.activation.jrnlJournalDir = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-    $DRY_RUN_CMD mkdir -p "$HOME/Documents/journal"
+    mkdir -p "$HOME/Documents/journal"
   '';
 }
