@@ -52,6 +52,7 @@
     ./karabiner.nix
     ./himalaya.nix
     ./k9s.nix
+    ./kind.nix
     ./khal.nix
     ./khard.nix
     ./mbsync.nix

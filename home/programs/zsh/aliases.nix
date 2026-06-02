@@ -125,6 +125,9 @@ let
     k9 = "k9s";
 
     sternf = "stern .";
+
+    kind-up = "kind create cluster --config ~/.config/kind/cluster.yaml";
+    kind-down = "kind delete cluster";
   };
 
   iac = {
