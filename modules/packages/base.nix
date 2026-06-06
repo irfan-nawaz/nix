@@ -20,7 +20,7 @@
     # Tree / navigation
     tree
     tre-command
-    broot
+    # broot installed via home/programs/broot.nix (HM owns its config).
 
     # Disk usage
     gdu
@@ -31,8 +31,8 @@
 
     # Downloads & transfer
     rsync
-    rclone
     magic-wormhole
+    # rclone installed via home/programs/rclone.nix (HM owns its remotes block).
 
     # Remote access
     openssh
@@ -46,12 +46,12 @@
     go-task
 
     # Terminal / UI / interactive layer
-    television
     cmatrix
     choose
     skim
     gum
     dialog
+    # television installed via home/programs/television.nix (HM owns its theme).
 
     # Search / data exploration
     fx

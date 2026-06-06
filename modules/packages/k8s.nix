@@ -5,9 +5,9 @@
     kubectl
     kubernetes-helm
     kustomize
-    k9s
     kubectx
     stern
+    # k9s installed via home/programs/k9s.nix (HM owns its settings + skin).
 
     # Local Kubernetes
     kind
