@@ -1,6 +1,8 @@
-# Determinate Nix custom config -- copy or symlink to /etc/nix/nix.custom.conf.
-# Determinate ignores nix-darwin's `nix.*` options, so these settings must live
-# outside the flake. Re-apply this file after Determinate upgrades.
+# Determinate Nix custom config. This file is wired into activation by
+# `environment.etc."nix/nix.custom.conf".source` in hosts/common/darwin.nix --
+# editing here changes /etc/nix/nix.custom.conf on the next darwin-rebuild.
+# Determinate ignores nix-darwin's `nix.*` options, so settings that would
+# normally go through `nix.settings` must live here instead.
 
 extra-substituters = https://nix-community.cachix.org https://devenv.cachix.org
 extra-trusted-public-keys = nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs= devenv.cachix.org-1:w1cLUi8dv3hnoSPGAuibQv+f9TZLr6cv/Hm9XgU50cw=

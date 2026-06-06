@@ -16,7 +16,7 @@ Conventions in this doc:
 
 ## Table of contents
 
-1. [Audiophile music stack (MPD + clients + beets)](#1-audiophile-music-stack-mpd--clients--beets)
+1. [Audiophile music stack (MPD + clients + wrtag)](#1-audiophile-music-stack-mpd--clients--wrtag)
 2. [Email (mbsync + notmuch + meli + msmtp + himalaya)](#2-email-mbsync--notmuch--meli--msmtp--himalaya)
 3. [Calendar + contacts (vdirsyncer + khal + khard)](#3-calendar--contacts-vdirsyncer--khal--khard)
 4. [RSS (newsboat)](#4-rss-newsboat)
@@ -26,15 +26,16 @@ Conventions in this doc:
 8. [macOS housekeeping](#8-macos-housekeeping)
 9. [Backups (restic)](#9-backups-restic)
 
-> **Important**: this round only installs the *packages*. The matching
-> config files (mpd.conf, mbsync, meli, himalaya, vdirsyncer pairs,
-> launchd timers, etc.) are deferred to a follow-up
-> `home-manager` plan. For now you can either hand-write the configs from
-> the samples below, or wait for the next PR that wires them via Nix.
+> **Important**: HM stub modules now exist at `home/programs/{mbsync,himalaya,
+> meli,vdirsyncer,mpd,ncmpcpp,khal,khard,newsboat,wrtag,rmpc}.nix` -- each is
+> committed as a commented-out skeleton with a TODO. Uncomment the relevant
+> block (and fill PLACEHOLDER values via sops) once you have the upstream
+> credentials. The samples below remain useful as a reference for the
+> config shape.
 
 ---
 
-## 1. Audiophile music stack (MPD + clients + beets)
+## 1. Audiophile music stack (MPD + clients + wrtag)
 
 ### The pipeline
 

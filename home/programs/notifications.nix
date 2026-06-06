@@ -14,7 +14,7 @@ let
     /usr/bin/osascript -e "display notification \"Review today: $count open tasks\" with title \"Daily Review\""
   '';
 
-  # Fire every 20 min; skip outside 09:30–18:30 in the script so a single
+  # Fire every 20 min; skip outside 12:30–21:00 in the script so a single
   # StartInterval covers all work hours without 60+ plist entries.
   idleNudgeScript = pkgs.writeShellScript "idle-nudge" ''
     time_mins=$(( 10#$(date +%H) * 60 + 10#$(date +%M) ))

@@ -224,7 +224,7 @@ let
     ai = "aichat";
     fabric = "fabric";
     op = "opencode";
-    cc = "claude-code";
+    cc = "claude";
   };
 
   bench = {

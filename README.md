@@ -18,9 +18,7 @@ A reproducible macOS setup built with `nix-darwin`, `home-manager`,
    for the end-to-end first-time setup (Determinate Nix, sops age key,
    `nix run nix-darwin -- switch` for the chicken-and-egg first
    switch, post-switch verification).
-4. (Optional) Drop `docs/nix.custom.conf.example` into `/etc/nix/nix.custom.conf`
-   to enable extra substituters under Determinate.
-5. Build first, switch when build passes:
+4. Build first, switch when build passes:
 
    ```bash
    just build shaikmdirfannawaz    # scripts/darwin/build-system

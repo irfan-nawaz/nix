@@ -8,10 +8,9 @@
     "*.lock"
     "secrets/secrets.yaml"
     "docs/notes/*"
-    "home/configs/atuin/config.toml"
-    "home/configs/procs/config.toml"
-    "home/configs/curl/.curlrc"
-    "home/ghostty/config"
-    "home/starship/starship.toml"
+    "home/programs/procs/config.toml"
+    "home/programs/curl/.curlrc"
+    "home/programs/ghostty/config"
+    "home/programs/starship/starship.toml"
   ];
 }
