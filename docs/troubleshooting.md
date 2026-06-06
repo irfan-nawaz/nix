@@ -14,6 +14,28 @@ Determinate Nix is the daemon here. `nix.enable = false` is intentional in
 options are inert -- configure substituters and trusted-users in
 `/etc/nix/nix.custom.conf` instead (see `docs/nix.custom.conf.example`).
 
+## `~/.ssh` owned by root after a switch
+
+Symptom: HM activation prints `error: cannot write to ~/.ssh/config:
+permission denied`, or git refuses to use the SSH keys with `Bad owner
+or permissions on ~/.ssh/id_ed25519_*`.
+
+Cause: on activation, sops-nix's secret-install script creates `~/.ssh`
+if it does not exist, and on some orderings it can land as
+`root:wheel 0755` -- HM then can't write into it.
+`hosts/common/darwin.nix` defends against this with both `preActivation`
+(creates `~/.ssh` as the user upfront) and `postActivation` (re-asserts
+ownership after secrets mount), but a partially-completed first switch
+on a fresh host can still leave it in a bad state.
+
+Fix:
+
+```bash
+sudo chown "$USER:staff" ~/.ssh
+sudo chmod 700 ~/.ssh
+sudo darwin-rebuild switch --flake ~/nix#<host>
+```
+
 ## `sops: failed to get the data key` during activation
 
 Symptom: a host build succeeds but `darwin-rebuild switch` aborts with sops

@@ -252,9 +252,22 @@
   # and the upstream rewrite broke it. karabiner.json itself stays in HM
   # (home/programs/karabiner.nix) -- only the binary install moved.
 
-  # sops-nix creates ~/.ssh as root (mode 0755) when dropping secret
-  # symlinks. home-manager later writes ~/.ssh/config into it but does
-  # not fix ownership. Reassert correct owner + 0700 on every switch.
+  # Set up ~/.ssh BEFORE sops-nix mounts secrets into it. sops-install-secrets
+  # uses `mkdir -p` for the parent dir, which leaves an existing user-owned
+  # 0700 dir untouched. Creating it here removes the race where ~/.ssh would
+  # otherwise be created by sops-nix as root:0755 first and then patched by
+  # postActivation -- a sequence that breaks if activation phases ever reorder.
+  system.activationScripts.preActivation.text = ''
+    mkdir -p "/Users/${username}/.ssh"
+    chown ${username}:staff "/Users/${username}/.ssh"
+    chmod 0700 "/Users/${username}/.ssh"
+  '';
+
+  # Safety net for the preActivation block above: if any script between
+  # preActivation and HM still managed to chown ~/.ssh to root (older nix-darwin
+  # behaviour, third-party module surprise), restore correct perms before HM
+  # tries to write ~/.ssh/config. Also ensures the screenshots dir exists for
+  # the system.defaults.screencapture.location setting.
   system.activationScripts.postActivation.text = ''
     if [ -d "/Users/${username}/.ssh" ]; then
       chown ${username}:staff "/Users/${username}/.ssh"
