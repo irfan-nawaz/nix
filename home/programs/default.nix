@@ -46,34 +46,24 @@
     ./tz.nix
     ./zk.nix
 
-    # Tier A — user-data-dependent stubs (TODO: fill placeholders + enable)
+    # Tier A — user-data-dependent active modules
+    # (productivity OS, k8s clusters, etc -- need imperative setup outside Nix)
     ./aerospace.nix
     ./hammerspoon.nix
     ./karabiner.nix
-    ./himalaya.nix
     ./k9s.nix
     ./kind.nix
-    ./khal.nix
-    ./khard.nix
-    ./mbsync.nix
-    ./meli.nix
-    ./mpd.nix
-    ./msmtp.nix
-    ./ncmpcpp.nix
-    ./newsboat.nix
-    ./notmuch.nix
-    ./rmpc.nix
     ./sketchybar.nix
-    ./vdirsyncer.nix
-    ./wrtag.nix
-    ./wtfutil.nix
 
-    # Tier C — specialised stubs (uncommon / overlap with already-configured tools)
+    # Tier C — specialised active modules
     ./notifications.nix
-    ./restic.nix
     ./taskwarrior.nix
     ./vscode.nix
-    ./xplr.nix
+
+    # Stubs — commented-out skeletons awaiting first activation.
+    # Each file lives under ./stubs and ships a TODO + config template.
+    # See docs/stubs.md for the per-tool blocker list.
+    ./stubs
 
     # Tier 1 — high-QoL shell/files/dev configs for already-enabled tools
     ./aria2.nix
