@@ -21,7 +21,7 @@
 #     repaints the bar instantly instead of waiting for the poll.
 #
 # Colors: Catppuccin Mocha (matches our nvim/tmux/btop theme).
-{ config, pkgs, ... }:
+{ pkgs, ... }:
 {
   programs.sketchybar = {
     extraPackages = [

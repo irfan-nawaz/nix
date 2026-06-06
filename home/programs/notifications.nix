@@ -7,7 +7,7 @@
 { pkgs, ... }:
 let
   timew = "${pkgs.timewarrior}/bin/timew";
-  task  = "${pkgs.taskwarrior3}/bin/task";
+  task = "${pkgs.taskwarrior3}/bin/task";
 
   dailyReviewScript = pkgs.writeShellScript "daily-review" ''
     count=$(${task} rc.verbose=nothing +PENDING count 2>/dev/null || echo "?")
@@ -25,8 +25,21 @@ let
     /usr/bin/osascript -e 'display notification "No timer running — start tracking something" with title "Focus"'
   '';
 
-  atTime = hour: minute:
-    map (d: { Weekday = d; Hour = hour; Minute = minute; }) [ 1 2 3 4 5 ];
+  atTime =
+    hour: minute:
+    map
+      (d: {
+        Weekday = d;
+        Hour = hour;
+        Minute = minute;
+      })
+      [
+        1
+        2
+        3
+        4
+        5
+      ];
 
   # Runs uair directly (same pattern as the polybar integration in the uair
   # README). uair's own stdout is clean newline-delimited time strings —
@@ -71,7 +84,8 @@ in
       enable = true;
       config = {
         ProgramArguments = [
-          "/usr/bin/osascript" "-e"
+          "/usr/bin/osascript"
+          "-e"
           ''display notification "Start the day — check in" with title "Day Start"''
         ];
         StartCalendarInterval = atTime 12 30;
@@ -82,7 +96,8 @@ in
       enable = true;
       config = {
         ProgramArguments = [
-          "/usr/bin/osascript" "-e"
+          "/usr/bin/osascript"
+          "-e"
           ''display notification "Wrap up — check out" with title "Day End"''
         ];
         StartCalendarInterval = atTime 21 0;

@@ -34,7 +34,9 @@
       });
       # intelli-shell 3.4.1: test_default_config fails across stable + unstable
       # due to a changed default config expectation. Upstream bug.
-      intelli-shell = prev.intelli-shell.overrideAttrs (_: { doCheck = false; });
+      intelli-shell = prev.intelli-shell.overrideAttrs (_: {
+        doCheck = false;
+      });
     })
   ];
 
@@ -84,7 +86,7 @@
       dock.autohide-delay = 0.0;
       dock.autohide-time-modifier = 0.2;
       dock.show-recents = false;
-      dock.mru-spaces = false;        # don't reorder spaces by recent use
+      dock.mru-spaces = false; # don't reorder spaces by recent use
       dock.minimize-to-application = true;
       dock.persistent-apps = [
         "/Users/${username}/Applications/Home Manager Apps/Ghostty.app"
@@ -104,7 +106,7 @@
       finder.FXPreferredViewStyle = "clmv"; # column view
       finder.FXEnableExtensionChangeWarning = false;
       finder._FXShowPosixPathInTitle = true;
-      finder.CreateDesktop = false;   # hide desktop icons
+      finder.CreateDesktop = false; # hide desktop icons
 
       # Global — appearance & input
       NSGlobalDomain.AppleInterfaceStyle = "Dark";
@@ -123,7 +125,7 @@
       NSGlobalDomain.NSDocumentSaveNewDocumentsToCloud = false;
 
       # Trackpad
-      trackpad.Clicking = true;       # tap to click
+      trackpad.Clicking = true; # tap to click
       trackpad.TrackpadThreeFingerDrag = true;
 
       # Screensaver / lock

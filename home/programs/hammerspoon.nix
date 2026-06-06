@@ -25,7 +25,7 @@
 # Permissions to grant once (first Hammerspoon launch after install):
 #   System Settings > Privacy & Security > Accessibility -> Hammerspoon
 #   System Settings > Privacy & Security > Notifications -> Hammerspoon
-{ ... }:
+_:
 {
   home.file.".hammerspoon/init.lua".text = ''
     -- ─── Base settings ───────────────────────────────────────────────

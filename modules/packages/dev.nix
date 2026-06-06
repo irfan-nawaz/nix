@@ -1,37 +1,40 @@
 { pkgs, pkgs-unstable, ... }:
 {
-  environment.systemPackages = with pkgs; [
-    # Databases
-    usql
-    sqlite
+  environment.systemPackages =
+    with pkgs;
+    [
+      # Databases
+      usql
+      sqlite
 
-    # Dev-heavy media
-    ffmpeg
-    smassh
-    sampler
+      # Dev-heavy media
+      ffmpeg
+      smassh
+      sampler
 
-    # Terminal recording / sharing
-    asciinema
-    t-rec
+      # Terminal recording / sharing
+      asciinema
+      t-rec
 
-    # Forge CLIs (GitHub + GitLab) -- repo / PR / SSH-key management.
-    gh
-    glab
+      # Forge CLIs (GitHub + GitLab) -- repo / PR / SSH-key management.
+      gh
+      glab
 
-    # Bookmarks
-    bmm
+      # Bookmarks
+      bmm
 
-    # Documentation / writing / slides
-    slides
-    runme
-    presenterm
-    tui-journal
-  ] ++ (with pkgs-unstable; [
-    # AI tools — release frequently, keep on unstable
-    yai
-    pi-coding-agent
+      # Documentation / writing / slides
+      slides
+      runme
+      presenterm
+      tui-journal
+    ]
+    ++ (with pkgs-unstable; [
+      # AI tools — release frequently, keep on unstable
+      yai
+      pi-coding-agent
 
-    # tmux session manager — active development
-    sesh
-  ]);
+      # tmux session manager — active development
+      sesh
+    ]);
 }

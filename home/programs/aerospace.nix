@@ -95,49 +95,139 @@
     # change between major versions. If an app stops landing in its
     # workspace after an update, re-check with `aerospace list-apps`.
     on-window-detected = [
-      { "if".app-id = "com.mitchellh.ghostty";         run = [ "move-node-to-workspace 1" ]; }
+      {
+        "if".app-id = "com.mitchellh.ghostty";
+        run = [ "move-node-to-workspace 1" ];
+      }
 
-      { "if".app-id = "com.microsoft.VSCode";          run = [ "move-node-to-workspace 2" ]; }
-      { "if".app-id = "com.todesktop.230313mzl4w4u92"; run = [ "move-node-to-workspace 2" ]; }
+      {
+        "if".app-id = "com.microsoft.VSCode";
+        run = [ "move-node-to-workspace 2" ];
+      }
+      {
+        "if".app-id = "com.todesktop.230313mzl4w4u92";
+        run = [ "move-node-to-workspace 2" ];
+      }
 
-      { "if".app-id = "com.google.Chrome";             run = [ "move-node-to-workspace 3" ]; }
-      { "if".app-id = "com.brave.Browser";             run = [ "move-node-to-workspace 3" ]; }
+      {
+        "if".app-id = "com.google.Chrome";
+        run = [ "move-node-to-workspace 3" ];
+      }
+      {
+        "if".app-id = "com.brave.Browser";
+        run = [ "move-node-to-workspace 3" ];
+      }
 
-      { "if".app-id = "com.postmanlabs.mac";           run = [ "move-node-to-workspace 4" ]; }
-      { "if".app-id = "com.tinyapp.TablePlus";         run = [ "move-node-to-workspace 4" ]; }
-      { "if".app-id = "com.docker.docker";             run = [ "move-node-to-workspace 4" ]; }
+      {
+        "if".app-id = "com.postmanlabs.mac";
+        run = [ "move-node-to-workspace 4" ];
+      }
+      {
+        "if".app-id = "com.tinyapp.TablePlus";
+        run = [ "move-node-to-workspace 4" ];
+      }
+      {
+        "if".app-id = "com.docker.docker";
+        run = [ "move-node-to-workspace 4" ];
+      }
 
-      { "if".app-id = "com.tinyspeck.slackmacgap";     run = [ "move-node-to-workspace 5" ]; }
-      { "if".app-id = "com.apple.mail";                run = [ "move-node-to-workspace 5" ]; }
-      { "if".app-id = "com.hnc.Discord";               run = [ "move-node-to-workspace 5" ]; }
+      {
+        "if".app-id = "com.tinyspeck.slackmacgap";
+        run = [ "move-node-to-workspace 5" ];
+      }
+      {
+        "if".app-id = "com.apple.mail";
+        run = [ "move-node-to-workspace 5" ];
+      }
+      {
+        "if".app-id = "com.hnc.Discord";
+        run = [ "move-node-to-workspace 5" ];
+      }
 
-      { "if".app-id = "md.obsidian";                   run = [ "move-node-to-workspace 6" ]; }
-      { "if".app-id = "net.cozic.joplin-desktop";      run = [ "move-node-to-workspace 6" ]; }
-      { "if".app-id = "com.apple.Notes";               run = [ "move-node-to-workspace 6" ]; }
+      {
+        "if".app-id = "md.obsidian";
+        run = [ "move-node-to-workspace 6" ];
+      }
+      {
+        "if".app-id = "net.cozic.joplin-desktop";
+        run = [ "move-node-to-workspace 6" ];
+      }
+      {
+        "if".app-id = "com.apple.Notes";
+        run = [ "move-node-to-workspace 6" ];
+      }
 
-      { "if".app-id = "com.spotify.client";            run = [ "move-node-to-workspace 7" ]; }
-      { "if".app-id = "com.colliderli.iina";           run = [ "move-node-to-workspace 7" ]; }
-      { "if".app-id = "org.videolan.vlc";              run = [ "move-node-to-workspace 7" ]; }
+      {
+        "if".app-id = "com.spotify.client";
+        run = [ "move-node-to-workspace 7" ];
+      }
+      {
+        "if".app-id = "com.colliderli.iina";
+        run = [ "move-node-to-workspace 7" ];
+      }
+      {
+        "if".app-id = "org.videolan.vlc";
+        run = [ "move-node-to-workspace 7" ];
+      }
 
-      { "if".app-id = "us.zoom.xos";                   run = [ "move-node-to-workspace 8" ]; }
-      { "if".app-id = "com.microsoft.teams";           run = [ "move-node-to-workspace 8" ]; }
-      { "if".app-id = "com.microsoft.teams2";          run = [ "move-node-to-workspace 8" ]; }
-      { "if".app-id = "Cisco-Systems.Spark";           run = [ "move-node-to-workspace 8" ]; }
+      {
+        "if".app-id = "us.zoom.xos";
+        run = [ "move-node-to-workspace 8" ];
+      }
+      {
+        "if".app-id = "com.microsoft.teams";
+        run = [ "move-node-to-workspace 8" ];
+      }
+      {
+        "if".app-id = "com.microsoft.teams2";
+        run = [ "move-node-to-workspace 8" ];
+      }
+      {
+        "if".app-id = "Cisco-Systems.Spark";
+        run = [ "move-node-to-workspace 8" ];
+      }
 
-      { "if".app-id = "com.1password.1password";       run = [ "move-node-to-workspace 9" ]; }
-      { "if".app-id = "com.apple.ActivityMonitor";     run = [ "move-node-to-workspace 9" ]; }
-      { "if".app-id = "leits.MeetingBar";              run = [ "move-node-to-workspace 9" ]; }
+      {
+        "if".app-id = "com.1password.1password";
+        run = [ "move-node-to-workspace 9" ];
+      }
+      {
+        "if".app-id = "com.apple.ActivityMonitor";
+        run = [ "move-node-to-workspace 9" ];
+      }
+      {
+        "if".app-id = "leits.MeetingBar";
+        run = [ "move-node-to-workspace 9" ];
+      }
 
       # ── Floating rules ──────────────────────────────────────────────
       # Small dialogs and system utilities that should never tile.
       # layout floating runs after any workspace rule above, so e.g.
       # System Settings lands on its workspace AND floats there.
-      { "if".app-id = "com.apple.systempreferences";   run = [ "layout floating" ]; }
-      { "if".app-id = "com.apple.finder";              run = [ "layout floating" ]; }
-      { "if".app-id = "com.apple.calculator";          run = [ "layout floating" ]; }
-      { "if".app-id = "com.apple.keychainaccess";      run = [ "layout floating" ]; }
-      { "if".app-id = "com.apple.installer";           run = [ "layout floating" ]; }
-      { "if".app-id = "com.apple.screencapture";       run = [ "layout floating" ]; }
+      {
+        "if".app-id = "com.apple.systempreferences";
+        run = [ "layout floating" ];
+      }
+      {
+        "if".app-id = "com.apple.finder";
+        run = [ "layout floating" ];
+      }
+      {
+        "if".app-id = "com.apple.calculator";
+        run = [ "layout floating" ];
+      }
+      {
+        "if".app-id = "com.apple.keychainaccess";
+        run = [ "layout floating" ];
+      }
+      {
+        "if".app-id = "com.apple.installer";
+        run = [ "layout floating" ];
+      }
+      {
+        "if".app-id = "com.apple.screencapture";
+        run = [ "layout floating" ];
+      }
     ];
 
     # ─── main mode: only one binding, the WM-mode trigger ────────────
@@ -226,19 +316,23 @@
     # Entered from wm-mode via `;`. esc reloads config, r rebalances.
     mode.service.binding = {
       esc = [
-        "reload-config" "mode main"
+        "reload-config"
+        "mode main"
         "exec-and-forget ${pkgs.sketchybar}/bin/sketchybar --trigger aerospace_mode MODE=main"
       ];
       r = [
-        "flatten-workspace-tree" "mode main"
+        "flatten-workspace-tree"
+        "mode main"
         "exec-and-forget ${pkgs.sketchybar}/bin/sketchybar --trigger aerospace_mode MODE=main"
       ];
       f = [
-        "layout floating tiling" "mode main"
+        "layout floating tiling"
+        "mode main"
         "exec-and-forget ${pkgs.sketchybar}/bin/sketchybar --trigger aerospace_mode MODE=main"
       ];
       backspace = [
-        "close-all-windows-but-current" "mode main"
+        "close-all-windows-but-current"
+        "mode main"
         "exec-and-forget ${pkgs.sketchybar}/bin/sketchybar --trigger aerospace_mode MODE=main"
       ];
     };

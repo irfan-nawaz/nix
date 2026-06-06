@@ -5,7 +5,10 @@
   username,
 }:
 let
-  pkgs-unstable = import inputs.nixpkgs-unstable { inherit system; config.allowUnfree = true; };
+  pkgs-unstable = import inputs.nixpkgs-unstable {
+    inherit system;
+    config.allowUnfree = true;
+  };
 in
 inputs.darwin.lib.darwinSystem {
   inherit system;

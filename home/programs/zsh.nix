@@ -16,7 +16,7 @@
     # systems compinit otherwise rescans every fpath entry every
     # startup (~150-300ms with many pkgs); the cache is rebuilt by
     # home-manager itself whenever modules change.
-    completionInit = ''autoload -U compinit && compinit -C'';
+    completionInit = "autoload -U compinit && compinit -C";
 
     shellAliases = import ./zsh/aliases.nix { inherit hostname; };
 

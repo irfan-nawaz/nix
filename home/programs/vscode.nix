@@ -28,7 +28,11 @@ let
     "terminal.integrated.fontSize" = 13;
 
     # Error Lens — show diagnostics inline
-    "errorLens.enabledDiagnosticLevels" = [ "error" "warning" "info" ];
+    "errorLens.enabledDiagnosticLevels" = [
+      "error"
+      "warning"
+      "info"
+    ];
 
     # GitLens — keep ambient decorations subtle
     "gitlens.currentLine.enabled" = true;

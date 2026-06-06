@@ -33,7 +33,6 @@
     inputs@{
       self,
       nixpkgs,
-      nixpkgs-unstable,
       treefmt-nix,
       ...
     }:

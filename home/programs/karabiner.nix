@@ -21,9 +21,8 @@
 # and enters wm-mode. Inside wm-mode, plain hjkl is bound by aerospace --
 # do NOT hold caps while in wm-mode, or you'll emit hyper-h (= arrow left)
 # and aerospace's plain-h binding won't fire.
-{ ... }:
+_:
 let
-  hyperMods = [ "left_command" "left_control" "left_option" "left_shift" ];
 
   # Hyper-layer helper: emits `to` whenever the user presses `from` while
   # holding the full hyper modifier set. Side-agnostic (left/right shift
@@ -32,25 +31,43 @@ let
     type = "basic";
     from = {
       key_code = from;
-      modifiers.mandatory = [ "command" "control" "option" "shift" ];
+      modifiers.mandatory = [
+        "command"
+        "control"
+        "option"
+        "shift"
+      ];
     };
-    to = [{ key_code = to; }];
+    to = [ { key_code = to; } ];
   };
 
   capsToHyper = {
     description = "Caps Lock -> Hyper when held, Escape when tapped";
-    manipulators = [{
-      type = "basic";
-      from = {
-        key_code = "caps_lock";
-        modifiers.optional = [ "any" ];
-      };
-      to = [{
-        key_code = "left_shift";
-        modifiers = [ "left_command" "left_control" "left_option" ];
-      }];
-      to_if_alone = [{ key_code = "escape"; halt = true; }];
-    }];
+    manipulators = [
+      {
+        type = "basic";
+        from = {
+          key_code = "caps_lock";
+          modifiers.optional = [ "any" ];
+        };
+        to = [
+          {
+            key_code = "left_shift";
+            modifiers = [
+              "left_command"
+              "left_control"
+              "left_option"
+            ];
+          }
+        ];
+        to_if_alone = [
+          {
+            key_code = "escape";
+            halt = true;
+          }
+        ];
+      }
+    ];
   };
 
   hyperNavigation = {
@@ -81,7 +98,7 @@ let
           key_code = "left_shift";
           modifiers.mandatory = [ "right_shift" ];
         };
-        to = [{ key_code = "caps_lock"; }];
+        to = [ { key_code = "caps_lock"; } ];
       }
       {
         type = "basic";
@@ -89,7 +106,7 @@ let
           key_code = "right_shift";
           modifiers.mandatory = [ "left_shift" ];
         };
-        to = [{ key_code = "caps_lock"; }];
+        to = [ { key_code = "caps_lock"; } ];
       }
     ];
   };
@@ -100,20 +117,21 @@ let
       show_in_menu_bar = true;
       show_profile_name_in_menu_bar = false;
     };
-    profiles = [{
-      name = "Default";
-      selected = true;
-      complex_modifications.rules = [
-        capsToHyper
-        hyperNavigation
-        hyperForwardDelete
-        bothShiftsToCapsLock
-      ];
-      virtual_hid_keyboard.keyboard_type_v2 = "ansi";
-    }];
+    profiles = [
+      {
+        name = "Default";
+        selected = true;
+        complex_modifications.rules = [
+          capsToHyper
+          hyperNavigation
+          hyperForwardDelete
+          bothShiftsToCapsLock
+        ];
+        virtual_hid_keyboard.keyboard_type_v2 = "ansi";
+      }
+    ];
   };
 in
 {
-  xdg.configFile."karabiner/karabiner.json".text =
-    builtins.toJSON karabinerJson;
+  xdg.configFile."karabiner/karabiner.json".text = builtins.toJSON karabinerJson;
 }

@@ -26,16 +26,44 @@
 { pkgs, lib, ... }:
 let
   sessions = {
-    main    = { path = "~"; };
-    nix     = { path = "~/nix"; command = "nvim ."; };
-    claude  = { path = "~/nix"; command = "claude"; };
-    notes   = { path = "~/Documents/zk"; command = "sh -c 'while zk edit --interactive; do true; done'"; };
-    tasks   = { path = "~"; };
-    habits  = { path = "~"; command = "dijo"; };
-    journal = { path = "~/Documents/journal"; command = "jrnl --edit"; };
-    sys     = { path = "~"; command = "btop"; };
-    clock   = { path = "~"; command = "clock-rs"; };
-    zones   = { path = "~"; command = "tz -w -m"; };
+    main = {
+      path = "~";
+    };
+    nix = {
+      path = "~/nix";
+      command = "nvim .";
+    };
+    claude = {
+      path = "~/nix";
+      command = "claude";
+    };
+    notes = {
+      path = "~/Documents/zk";
+      command = "sh -c 'while zk edit --interactive; do true; done'";
+    };
+    tasks = {
+      path = "~";
+    };
+    habits = {
+      path = "~";
+      command = "dijo";
+    };
+    journal = {
+      path = "~/Documents/journal";
+      command = "jrnl --edit";
+    };
+    sys = {
+      path = "~";
+      command = "btop";
+    };
+    clock = {
+      path = "~";
+      command = "clock-rs";
+    };
+    zones = {
+      path = "~";
+      command = "tz -w -m";
+    };
   };
 
   # Standard 4-window project layout applied to every ~/cp/* and ~/pp/* session.
@@ -74,14 +102,17 @@ let
     path = "${s.path}"
   '';
 
-  toCase = name: s:
-    lib.optionalString (s ? command)
-      "  ${name}) exec tmux respawn-pane -k -t \"$name\" ${lib.escapeShellArg s.command} ;;";
+  toCase =
+    name: s:
+    lib.optionalString (
+      s ? command
+    ) "  ${name}) exec tmux respawn-pane -k -t \"$name\" ${lib.escapeShellArg s.command} ;;";
 
   seshToml = lib.concatStringsSep "\n" (lib.mapAttrsToList toToml sessions);
 
-  dispatcherCases = lib.concatStringsSep "\n"
-    (lib.filter (s: s != "") (lib.mapAttrsToList toCase sessions));
+  dispatcherCases = lib.concatStringsSep "\n" (
+    lib.filter (s: s != "") (lib.mapAttrsToList toCase sessions)
+  );
 
   tmuxSessionLauncher = pkgs.writeShellScriptBin "tmux-session-launcher" ''
     name="$1"

@@ -20,7 +20,7 @@
     ai.enable = lib.mkDefault true;
   };
 
-home.sessionVariables.GITHUB_TOKEN_FILE = "/run/secrets/github_token";
+  home.sessionVariables.GITHUB_TOKEN_FILE = "/run/secrets/github_token";
 
   # Hostname-scoped aliases: every host wants `rebuild` / `testbuild`
   # but the flake target differs per machine. Kept here (not in
