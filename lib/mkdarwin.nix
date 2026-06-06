@@ -5,9 +5,22 @@
   username,
 }:
 let
+  # Single source of truth for nixpkgs config knobs across BOTH the
+  # stable graph (injected as a module below) and the pkgs-unstable
+  # import. Add allowInsecurePredicate / permittedInsecurePackages /
+  # overlays-by-default here when you need them in both.
+  #
+  # allowUnfree is required for: terraform (BSL since v1.6),
+  # _1password-cli at the system layer; slack/raycast/notion-app/
+  # code-cursor/postman/tableplus/meetingbar in home/common; vscode +
+  # obsidian via modules/home/gui.nix; AI clients (claude-code etc.)
+  # on the pkgs-unstable side.
+  nixpkgsConfig = {
+    allowUnfree = true;
+  };
   pkgs-unstable = import inputs.nixpkgs-unstable {
     inherit system;
-    config.allowUnfree = true;
+    config = nixpkgsConfig;
   };
 in
 inputs.darwin.lib.darwinSystem {
@@ -23,6 +36,10 @@ inputs.darwin.lib.darwinSystem {
   };
 
   modules = [
+    # Apply the shared nixpkgs config to the stable graph nix-darwin
+    # builds the system from -- pairs with the pkgs-unstable import above.
+    { nixpkgs.config = nixpkgsConfig; }
+
     ./../hosts/common/darwin.nix
     ./../hosts/darwin/${hostname}/default.nix
 

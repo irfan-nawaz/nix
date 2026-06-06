@@ -19,10 +19,9 @@
     ../../modules/packages/comms.nix
   ];
 
-  # Required for: terraform (BSL since v1.6) and _1password-cli at the
-  # system layer; slack/raycast/notion-app/code-cursor/postman/tableplus/
-  # meetingbar in home/common; vscode + obsidian via modules/home/gui.nix.
-  nixpkgs.config.allowUnfree = true;
+  # nixpkgs.config.allowUnfree lives in lib/mkdarwin.nix (single source
+  # of truth shared with the pkgs-unstable import). Overlays stay here
+  # because they're stable-graph-specific.
 
   # wrtag's test suite includes a cover-art filename check that assumes
   # a case-sensitive filesystem; macOS (APFS default) is case-insensitive
