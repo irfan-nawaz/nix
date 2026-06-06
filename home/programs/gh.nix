@@ -3,11 +3,15 @@
 # multi-account workflow in docs/forge-cli-multi-account.md, switch
 # active account with `gh auth switch`.
 #
-# Note: the dev package set already installs `gh`; enabling the HM
-# module here just adds declarative settings on top.
-_: {
+# `package` is pinned to `pkgs.gh` to stay coordinated with
+# modules/packages/dev.nix (same store path, no duplicate in the closure).
+# Mirror the awscli.nix pattern: if dev.nix ever moves gh to unstable,
+# update this line so HM keeps tracking the same derivation.
+{ pkgs, ... }:
+{
   programs.gh = {
     enable = true;
+    package = pkgs.gh;
     settings = {
       git_protocol = "ssh";
       editor = "nvim";

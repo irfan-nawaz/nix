@@ -155,7 +155,13 @@ in
     paths = ["~/cp", "~/pp"]
   '';
 
-  programs.tmux.extraConfig = ''
+  # mkAfter: append this hook after tmux.nix's base extraConfig so the
+  # final tmux.conf reads top-to-bottom (base settings, then this hook).
+  # The hook itself is order-independent at runtime, but pinning the
+  # merge order keeps the generated conf readable and stops future
+  # contributors from wondering whether the hook needs tmux's `set -g`
+  # lines to land first.
+  programs.tmux.extraConfig = lib.mkAfter ''
     set-hook -ga session-created 'run-shell "tmux-session-launcher #{hook_session_name}"'
   '';
 }

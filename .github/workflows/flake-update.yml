@@ -25,6 +25,12 @@ jobs:
           nix build .#darwinConfigurations.shaikmdirfannawaz.system --show-trace
           nix build .#darwinConfigurations.irfan-personal.system --show-trace
 
+      - name: treefmt --check
+        # CONTRIBUTING.md requires `nix fmt` clean before a PR. A flake
+        # input bump can change treefmt's pinned nixfmt/statix/deadnix,
+        # which would surface as a CI failure on the auto-bump PR otherwise.
+        run: nix build .#checks.aarch64-darwin.formatting --show-trace
+
       - name: Open PR with flake.lock bump
         uses: peter-evans/create-pull-request@c5a7806660adbe173f04e3e038b0ccdcd758773c # v6.1.0
         with:
