@@ -36,4 +36,10 @@ jobs:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
         with:
           fetch-depth: 0
-      - uses: gitleaks/gitleaks-action@dcedce43c6f43de0b836d1fe38946645c9c638dc # v2
+      - uses: DeterminateSystems/nix-installer-action@e50d5f73bfe71c2dd0aa4218de8f4afa59f8f81d # v16
+      # Run gitleaks via nixpkgs to share the version pinned in
+      # modules/packages/security.nix instead of taking on the
+      # gitleaks-action license/maintenance burden. `detect` scans the full
+      # git history (made available by fetch-depth: 0 above).
+      - name: gitleaks detect
+        run: nix shell nixpkgs#gitleaks -c gitleaks detect --source . --redact --verbose
