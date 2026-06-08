@@ -17,7 +17,86 @@
 # wm-mode is unmodified keys -- no chord conflicts possible.
 #
 # Reference: https://nikitabobko.github.io/AeroSpace/guide
-{ pkgs, ... }:
+{ pkgs, lib, ... }:
+let
+  # App → workspace routing. Each entry: macOS bundle identifier → workspace
+  # number. The let-binding shape replaces ~130 lines of multi-line attrset
+  # entries that were hard to scan post-nixfmt 2.5.0; adding an app is now
+  # one line.
+  #
+  # Workspace key:
+  #   1  terminal     ghostty
+  #   2  editor       vscode, cursor
+  #   3  browser      chrome (all profiles), brave
+  #   4  dev tools    postman, tableplus, docker
+  #   5  comms        slack, mail, discord
+  #   6  notes        obsidian, joplin, apple notes
+  #   7  media        spotify, iina, vlc
+  #   8  meetings     zoom, teams, webex
+  #   9  utilities    1password, activity monitor, meetingbar
+  #
+  # Caveat: bundle IDs for Electron / todesktop apps (e.g. Cursor) can
+  # change between major versions. If an app stops landing in its
+  # workspace after an update, re-check with `aerospace list-apps`.
+  workspaceRouting = {
+    "com.mitchellh.ghostty" = 1;
+
+    "com.microsoft.VSCode" = 2;
+    "com.todesktop.230313mzl4w4u92" = 2;
+
+    "com.google.Chrome" = 3;
+    "com.brave.Browser" = 3;
+
+    "com.postmanlabs.mac" = 4;
+    "com.tinyapp.TablePlus" = 4;
+    "com.docker.docker" = 4;
+
+    "com.tinyspeck.slackmacgap" = 5;
+    "com.apple.mail" = 5;
+    "com.hnc.Discord" = 5;
+
+    "md.obsidian" = 6;
+    "net.cozic.joplin-desktop" = 6;
+    "com.apple.Notes" = 6;
+
+    "com.spotify.client" = 7;
+    "com.colliderli.iina" = 7;
+    "org.videolan.vlc" = 7;
+
+    "us.zoom.xos" = 8;
+    "com.microsoft.teams" = 8;
+    "com.microsoft.teams2" = 8;
+    "Cisco-Systems.Spark" = 8;
+
+    "com.1password.1password" = 9;
+    "com.apple.ActivityMonitor" = 9;
+    "leits.MeetingBar" = 9;
+  };
+
+  # Small dialogs and system utilities that should never tile. `layout
+  # floating` rules apply on top of any workspace rule for the same app,
+  # so an app listed in BOTH would land on its workspace AND float. No
+  # current floating app overlaps workspaceRouting; adding such an app
+  # is fine -- the order at the assignment site (workspace rules first)
+  # keeps the layering correct.
+  floatingApps = [
+    "com.apple.systempreferences"
+    "com.apple.finder"
+    "com.apple.calculator"
+    "com.apple.keychainaccess"
+    "com.apple.installer"
+    "com.apple.screencapture"
+  ];
+
+  mkWorkspaceRule = appId: ws: {
+    "if".app-id = appId;
+    run = [ "move-node-to-workspace ${toString ws}" ];
+  };
+  mkFloatingRule = appId: {
+    "if".app-id = appId;
+    run = [ "layout floating" ];
+  };
+in
 {
   # HM owns the launchd agent (single source of truth for startup).
   # `start-at-login = false` below is intentional: aerospace's own
@@ -81,159 +160,13 @@
 
     # ─── Auto-route apps to workspaces ───────────────────────────────
     # Fires the moment a new window appears (app launch, second window,
-    # popped-out modal). `if.app-id` matches the macOS bundle identifier;
-    # find an unknown app's ID with `aerospace list-apps` while it's
-    # running. `run` is a list so multiple commands can chain.
-    #
-    # Workspace layout:
-    #   1  terminal     ghostty
-    #   2  editor       vscode, cursor
-    #   3  browser      chrome (all profiles), brave
-    #   4  dev tools    postman, tableplus, docker
-    #   5  comms        slack, mail, discord
-    #   6  notes        obsidian, joplin, apple notes
-    #   7  media        spotify, iina, vlc
-    #   8  meetings     zoom, teams, webex
-    #   9  utilities    1password, activity monitor, meetingbar
-    #
-    # Caveat: bundle IDs for Electron / todesktop apps (e.g. Cursor) can
-    # change between major versions. If an app stops landing in its
-    # workspace after an update, re-check with `aerospace list-apps`.
-    on-window-detected = [
-      {
-        "if".app-id = "com.mitchellh.ghostty";
-        run = [ "move-node-to-workspace 1" ];
-      }
-
-      {
-        "if".app-id = "com.microsoft.VSCode";
-        run = [ "move-node-to-workspace 2" ];
-      }
-      {
-        "if".app-id = "com.todesktop.230313mzl4w4u92";
-        run = [ "move-node-to-workspace 2" ];
-      }
-
-      {
-        "if".app-id = "com.google.Chrome";
-        run = [ "move-node-to-workspace 3" ];
-      }
-      {
-        "if".app-id = "com.brave.Browser";
-        run = [ "move-node-to-workspace 3" ];
-      }
-
-      {
-        "if".app-id = "com.postmanlabs.mac";
-        run = [ "move-node-to-workspace 4" ];
-      }
-      {
-        "if".app-id = "com.tinyapp.TablePlus";
-        run = [ "move-node-to-workspace 4" ];
-      }
-      {
-        "if".app-id = "com.docker.docker";
-        run = [ "move-node-to-workspace 4" ];
-      }
-
-      {
-        "if".app-id = "com.tinyspeck.slackmacgap";
-        run = [ "move-node-to-workspace 5" ];
-      }
-      {
-        "if".app-id = "com.apple.mail";
-        run = [ "move-node-to-workspace 5" ];
-      }
-      {
-        "if".app-id = "com.hnc.Discord";
-        run = [ "move-node-to-workspace 5" ];
-      }
-
-      {
-        "if".app-id = "md.obsidian";
-        run = [ "move-node-to-workspace 6" ];
-      }
-      {
-        "if".app-id = "net.cozic.joplin-desktop";
-        run = [ "move-node-to-workspace 6" ];
-      }
-      {
-        "if".app-id = "com.apple.Notes";
-        run = [ "move-node-to-workspace 6" ];
-      }
-
-      {
-        "if".app-id = "com.spotify.client";
-        run = [ "move-node-to-workspace 7" ];
-      }
-      {
-        "if".app-id = "com.colliderli.iina";
-        run = [ "move-node-to-workspace 7" ];
-      }
-      {
-        "if".app-id = "org.videolan.vlc";
-        run = [ "move-node-to-workspace 7" ];
-      }
-
-      {
-        "if".app-id = "us.zoom.xos";
-        run = [ "move-node-to-workspace 8" ];
-      }
-      {
-        "if".app-id = "com.microsoft.teams";
-        run = [ "move-node-to-workspace 8" ];
-      }
-      {
-        "if".app-id = "com.microsoft.teams2";
-        run = [ "move-node-to-workspace 8" ];
-      }
-      {
-        "if".app-id = "Cisco-Systems.Spark";
-        run = [ "move-node-to-workspace 8" ];
-      }
-
-      {
-        "if".app-id = "com.1password.1password";
-        run = [ "move-node-to-workspace 9" ];
-      }
-      {
-        "if".app-id = "com.apple.ActivityMonitor";
-        run = [ "move-node-to-workspace 9" ];
-      }
-      {
-        "if".app-id = "leits.MeetingBar";
-        run = [ "move-node-to-workspace 9" ];
-      }
-
-      # ── Floating rules ──────────────────────────────────────────────
-      # Small dialogs and system utilities that should never tile.
-      # layout floating runs after any workspace rule above, so e.g.
-      # System Settings lands on its workspace AND floats there.
-      {
-        "if".app-id = "com.apple.systempreferences";
-        run = [ "layout floating" ];
-      }
-      {
-        "if".app-id = "com.apple.finder";
-        run = [ "layout floating" ];
-      }
-      {
-        "if".app-id = "com.apple.calculator";
-        run = [ "layout floating" ];
-      }
-      {
-        "if".app-id = "com.apple.keychainaccess";
-        run = [ "layout floating" ];
-      }
-      {
-        "if".app-id = "com.apple.installer";
-        run = [ "layout floating" ];
-      }
-      {
-        "if".app-id = "com.apple.screencapture";
-        run = [ "layout floating" ];
-      }
-    ];
+    # popped-out modal). The mapping tables live in the let-binding at
+    # the top of this file (`workspaceRouting`, `floatingApps`); the
+    # helpers below stitch them into the list shape aerospace expects.
+    # Workspace rules come first so any floating rule for the same app
+    # would layer on top.
+    on-window-detected =
+      (lib.mapAttrsToList mkWorkspaceRule workspaceRouting) ++ (map mkFloatingRule floatingApps);
 
     # ─── main mode: only one binding, the WM-mode trigger ────────────
     # Pressing caps+w (Raycast hyper + w) enters wm-mode. Everything else
