@@ -2,6 +2,10 @@
 # 256-color + true-color, mouse on, sane indices. Enable lives in
 # modules/home/tui.nix (dev tier).
 #
+# Layer 3 (panes & sessions inside one terminal) in the Karabiner ->
+# Hammerspoon -> Aerospace -> tmux/sesh stack. See
+# docs/productivity-stack.md for the layer model.
+#
 # The session ecosystem (sesh + dispatcher + auto-launch hook) is
 # owned by home/programs/sesh.nix as a single source of truth -- it
 # appends its hook line to programs.tmux.extraConfig via HM merge.

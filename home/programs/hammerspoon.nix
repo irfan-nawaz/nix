@@ -10,10 +10,9 @@
 # as the template for additional categories (system, web, tools, ...).
 # Each new category = one more modal block in the same shape.
 #
-# Layer split (must stay clean):
-#   Karabiner    physical-key transforms  (caps -> hyper/esc, etc.)
-#   Hammerspoon  chord -> action          (this file: leader -> launch)
-#   aerospace    window management        (caps+w wm-mode)
+# Layer 1 (chord -> action) in the Karabiner -> Hammerspoon -> Aerospace
+# -> tmux/sesh stack. See docs/productivity-stack.md for the canonical
+# layer model -- updates to the diagram belong there.
 #
 # Reserved keys that Hammerspoon MUST NOT bind (Karabiner swallows them
 # at the HID layer before Hammerspoon ever sees them):
@@ -25,8 +24,7 @@
 # Permissions to grant once (first Hammerspoon launch after install):
 #   System Settings > Privacy & Security > Accessibility -> Hammerspoon
 #   System Settings > Privacy & Security > Notifications -> Hammerspoon
-_:
-{
+_: {
   home.file.".hammerspoon/init.lua".text = ''
     -- ─── Base settings ───────────────────────────────────────────────
     hs.window.animationDuration = 0   -- instant window ops, no easing

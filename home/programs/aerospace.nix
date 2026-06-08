@@ -3,6 +3,9 @@
 # this file owns the declarative config that HM compiles to
 # ~/.aerospace.toml.
 #
+# Layer 2 (window management) in the Karabiner -> Hammerspoon -> Aerospace
+# -> tmux/sesh stack. See docs/productivity-stack.md for the layer model.
+#
 # Binding philosophy: vim-like mode.
 #
 # One global chord (caps+w) enters `wm` mode -- a sticky mode in which

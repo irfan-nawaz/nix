@@ -1,5 +1,9 @@
 # Single source of truth for the tmux session ecosystem.
 #
+# Layer 3 (sessions inside the terminal) in the Karabiner -> Hammerspoon
+# -> Aerospace -> tmux/sesh stack. See docs/productivity-stack.md for
+# the layer model and ritual flow.
+#
 # Each entry in `sessions` below produces two coordinated artifacts:
 #
 #   1. A `[[session]]` block in ~/.config/sesh/sesh.toml so the session

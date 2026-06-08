@@ -2,6 +2,10 @@
 # (hosts/common/darwin.nix) installs the binary + daemons; this HM module
 # owns the JSON config it reads on startup.
 #
+# Layer 0 (physical -> logical keys) in the Karabiner -> Hammerspoon ->
+# Aerospace -> tmux/sesh stack. See docs/productivity-stack.md for the
+# layer model.
+#
 # Why fully-declarative JSON instead of the GUI?
 #   Karabiner's GUI writes the same file we manage here. Two writers =
 #   drift. Nix wins; GUI edits get clobbered on next switch. The whole
