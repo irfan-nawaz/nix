@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Run from repo root regardless of caller cwd so relative paths
+# (./result-darwin-*, the flake reference) resolve consistently.
+cd "$(dirname "$0")/../.."
+
 host="${1:-}"
 if [ -z "$host" ]; then
   echo "usage: $(basename "$0") <hostname>" >&2

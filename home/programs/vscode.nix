@@ -115,6 +115,8 @@ in
     IMMUTABLE="$VSCODE_EXT/.extensions-immutable.json"
     if [ -f "$IMMUTABLE" ]; then
       cp -f "$IMMUTABLE" "$VSCODE_EXT/extensions.json"
+    else
+      echo "warning: HM extensions-immutable manifest missing at $IMMUTABLE; Cursor.app may not see HM-managed extensions until the next switch (HM module name may have changed)" >&2
     fi
   '';
 }

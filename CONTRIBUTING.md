@@ -28,6 +28,9 @@ Or use the `just` wrappers (`just fmt`, `just check`, `just build <host>`).
   (`home/users/<u>.nix`) should stay below 15 LOC.
 - Never commit unencrypted secrets. New secret keys go through
   `docs/fresh-host-bootstrap.md` + `docs/secret-rotation.md`.
+- `.claude/` is gitignored (Claude Code session state). Project-level
+  `CLAUDE.md` files in subdirs ARE tracked -- they're the curated context
+  pinned to each project root. Don't gitignore those.
 
 ## Adding a new host
 

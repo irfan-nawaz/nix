@@ -24,6 +24,13 @@ let
     y = "yazi";
   };
 
+  # modernReplacements overrides POSIX-named tools with modern alternatives.
+  # `find = fd` and `grep = rg` are deliberate productivity wins (smart-case,
+  # .gitignore-aware, parallel) but DO bite when running scripts pasted from
+  # the internet that expect POSIX find/grep flag semantics. If a one-liner
+  # fails with "unknown flag" or unexpected results, run it via
+  #   command find ...   /   command grep ...
+  # to bypass the alias for that single invocation.
   modernReplacements = {
     ls = "eza --icons";
     ll = "eza -lh --icons --git";

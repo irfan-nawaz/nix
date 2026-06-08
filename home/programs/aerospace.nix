@@ -54,6 +54,11 @@
     # launchd agent whose PATH only contains /usr/bin:/bin:/usr/sbin:/sbin,
     # so a bare `sketchybar` invocation fails silently with
     # `command not found` and the pills stay frozen on the last value.
+    #
+    # `pkgs.sketchybar` (unwrapped) is intentional here -- this call only
+    # fires `--trigger`, which doesn't need the extraPackages PATH that
+    # programs.sketchybar's wrapper adds for plugin scripts. The same
+    # holds for the wm/service mode bindings further down this file.
     exec-on-workspace-change = [
       "/bin/bash"
       "-c"

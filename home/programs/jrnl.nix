@@ -22,20 +22,19 @@ let
   '';
 in
 {
-  home.activation.jrnlConfig = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+  home.activation.jrnlSetup = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    # Write mutable jrnl config on first run. If a read-only symlink exists
+    # from a previous HM generation, replace it with a writable copy.
     config_dir="$HOME/.config/jrnl"
     config_file="$config_dir/jrnl.yaml"
-    # Write mutable config on first run. If a read-only symlink exists from
-    # a previous HM generation, replace it with a writable copy.
     if [ ! -f "$config_file" ] || [ -L "$config_file" ]; then
       mkdir -p "$config_dir"
       rm -f "$config_file"
       cp ${jrnlConfig} "$config_file"
       chmod 644 "$config_file"
     fi
-  '';
 
-  home.activation.jrnlJournalDir = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    # Ensure the journal directory exists for the default journal path.
     mkdir -p "$HOME/Documents/journal"
   '';
 }

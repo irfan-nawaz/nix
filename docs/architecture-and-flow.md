@@ -79,23 +79,30 @@ flowchart TD
   flakeEntry --> hostOutput[darwinConfigurationsHost]
   hostOutput --> mkDarwin[libMkdarwin]
 
+  mkDarwin --> nixpkgsCfg[NixpkgsConfigShared]
   mkDarwin --> hostCommon[hostsCommonDarwin]
   mkDarwin --> hostMachine[hostsDarwinHostDefault]
   mkDarwin --> hmBridge[homeManagerDarwinModule]
-  mkDarwin --> sopsLayer[sopsNixDarwinModule]
   mkDarwin --> brewLayer[nixHomebrewDarwinModule]
+  mkDarwin --> sopsLayer[sopsNixDarwinModule]
 
   hmBridge --> userHome[homeUsersUsername]
   userHome --> homeCommon[homeCommonDefault]
-  userHome --> appConfigs[homeAppConfigs]
+  userHome --> appConfigs[homeProgramsActiveModules]
+  userHome --> appStubs[homeProgramsStubs]
   appConfigs --> xdgTargets[xdgConfigFileTargets]
 
-  sopsLayer --> secretManifest[secretManifestBuild]
+  hostCommon --> determinateConf[etcNixCustomConf]
+  hostCommon --> macosDefaults[systemDefaults]
+
   brewLayer --> brewActivation[brewActivationScripts]
+  sopsLayer --> secretManifest[secretManifestBuild]
 
   xdgTargets --> buildResult[darwinSystemBuild]
-  secretManifest --> buildResult
+  determinateConf --> buildResult
+  macosDefaults --> buildResult
   brewActivation --> buildResult
+  secretManifest --> buildResult
 
   buildResult --> switchStep[darwinRebuildSwitch]
   switchStep --> activatedSystem[ActivatedSystemState]
@@ -108,15 +115,16 @@ flowchart TD
 1. `flake.nix` selects `darwinConfigurations.irfan-personal`.
 2. That calls `lib.mkDarwin { system, hostname, username, ... }` from `lib/mkdarwin.nix`.
 3. `mkdarwin` composes these modules in order:
+   - inline `{ nixpkgs.config = nixpkgsConfig; }` (single source of truth for `allowUnfree` etc., shared with the `pkgs-unstable` import in the same `let`)
    - `hosts/common/darwin.nix`
-   - `hosts/darwin/irfan-personal/default.nix`
-   - Home Manager Darwin bridge
-   - `home/users/irfan-personal.nix`
+   - `hosts/darwin/<hostname>/default.nix`
+   - Home Manager Darwin bridge + `home/users/<username>.nix`
    - `nix-homebrew` Darwin module
    - `sops-nix` Darwin module
-4. `home/users/irfan-personal.nix` imports `home/common/default.nix` and links app configs via `xdg.configFile`.
-5. On `build`, Nix evaluates and produces the system derivation.
-6. On `switch`, Darwin activation scripts apply system/user changes and materialize symlinks/config paths.
+4. `home/users/<username>.nix` imports `home/common/default.nix` and `home/programs/` (which includes `home/programs/stubs/` for awaiting-activation modules — see `docs/stubs.md`).
+5. `hosts/common/darwin.nix` declaratively installs `/etc/nix/nix.custom.conf` from `docs/nix.custom.conf.example` (`nix.enable = false` keeps Determinate the Nix daemon owner).
+6. On `build`, Nix evaluates and produces the system derivation.
+7. On `switch`, Darwin activation scripts apply system/user changes and materialize symlinks/config paths.
 
 ---
 

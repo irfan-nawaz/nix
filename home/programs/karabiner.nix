@@ -21,7 +21,7 @@
 # and enters wm-mode. Inside wm-mode, plain hjkl is bound by aerospace --
 # do NOT hold caps while in wm-mode, or you'll emit hyper-h (= arrow left)
 # and aerospace's plain-h binding won't fire.
-_:
+{ lib, ... }:
 let
 
   # Hyper-layer helper: emits `to` whenever the user presses `from` while
@@ -134,4 +134,16 @@ let
 in
 {
   xdg.configFile."karabiner/karabiner.json".text = builtins.toJSON karabinerJson;
+
+  # Karabiner-Elements 15.x auto-saves timestamped backups under
+  # ~/.config/karabiner/automatic_backups/ on every config write. Since
+  # karabiner.json is owned declaratively here, those backups are useless
+  # to us and accumulate unboundedly. Prune anything older than 30 days
+  # on activation -- cheap find call, no-op when the dir is empty.
+  home.activation.karabinerBackupGC = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    backup_dir="$HOME/.config/karabiner/automatic_backups"
+    if [ -d "$backup_dir" ]; then
+      find "$backup_dir" -type f -mtime +30 -delete 2>/dev/null || true
+    fi
+  '';
 }

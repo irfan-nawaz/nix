@@ -229,8 +229,11 @@
 
   # Weekly garbage collection. Determinate Nix ignores nix-darwin's nix.gc
   # block, so we drive nix-collect-garbage with a launchd agent instead.
+  # 30d retention preserves the rollback option for ~4 weeks of switches;
+  # binary cache hits keep rebuild cost low if more aggressive cleanup is
+  # ever needed via `just gc`.
   launchd.user.agents.nix-gc = {
-    command = "/run/current-system/sw/bin/nix-collect-garbage --delete-older-than 14d";
+    command = "/run/current-system/sw/bin/nix-collect-garbage --delete-older-than 30d";
     serviceConfig.StartCalendarInterval = [
       {
         Hour = 3;
