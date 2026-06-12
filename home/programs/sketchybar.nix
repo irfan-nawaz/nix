@@ -5,7 +5,8 @@
 # Bar layout:
 #   left:  workspace pills 1..9 (subscribed to aerospace_workspace_change,
 #          which aerospace.nix triggers via exec-on-workspace-change)
-#   right: task_count, timew tracker, uair (clock + battery in macOS native)
+#   right: kube_ctx · next_task · task_count · timew_day · uair · timew
+#          (clock + battery in macOS native)
 #
 # Plugins live next to the rc as xdg.configFile entries (no extra dirs,
 # all paths declarative). External CLIs the plugins need (aerospace,
@@ -28,6 +29,8 @@
       pkgs.aerospace
       pkgs.timewarrior
       pkgs.taskwarrior3
+      pkgs.jq
+      pkgs.kubectl
     ];
 
     config.text = ''
@@ -38,6 +41,9 @@
       export ACCENT=0xff89b4fa
       export SURFACE=0xff313244
       export RED=0xfff38ba8
+      export GREEN=0xffa6e3a1
+      export SKY=0xff89dceb
+      export MAUVE=0xffcba6f7
 
       PLUGIN_DIR="$HOME/.config/sketchybar/plugins"
 
@@ -103,8 +109,8 @@
                        script="$PLUGIN_DIR/front_app.sh"
 
       # ─── Right side ────────────────────────────────────────────────
-      # Items added to "right" stack right-to-left in declaration order,
-      # so visual order on the bar will be: [task] [timew] [uair]
+      # Declaration order = rightmost first. Visual left→right:
+      #   [kube_ctx] [next_task] [task_count] [timew_day] [uair] [timew]
       # Clock and battery are in macOS native top-right (no duplication).
       sketchybar --add item timew right \
                  --subscribe timew timew_update \
@@ -115,10 +121,27 @@
       sketchybar --add item uair right \
                  --set uair drawing=off
 
+      # Daily total — how much deep work logged today (including current interval).
+      sketchybar --add item timew_day right \
+                 --subscribe timew_day timew_update \
+                 --set timew_day update_freq=120 \
+                       script="$PLUGIN_DIR/timew_day.sh"
+
       sketchybar --add item task_count right \
                  --subscribe task_count timew_update \
                  --set task_count update_freq=60 \
                        script="$PLUGIN_DIR/task_count.sh"
+
+      # Top urgency task — what to work on next without opening a terminal.
+      sketchybar --add item next_task right \
+                 --subscribe next_task timew_update \
+                 --set next_task update_freq=60 \
+                       script="$PLUGIN_DIR/next_task.sh"
+
+      # Kubernetes context — hidden when on local colima cluster.
+      sketchybar --add item kube_ctx right \
+                 --set kube_ctx update_freq=30 \
+                       script="$PLUGIN_DIR/kube_ctx.sh"
 
       sketchybar --update
     '';
@@ -235,6 +258,86 @@
       else
         sketchybar --set "$NAME" drawing=on label="[$COUNT]" label.color=0xff89b4fa
       fi
+    '';
+  };
+
+  xdg.configFile."sketchybar/plugins/next_task.sh" = {
+    executable = true;
+    text = ''
+      #!/usr/bin/env bash
+      # Show the highest-urgency pending task. Hidden when inbox is empty.
+      # jq sorts by -.urgency; the +next tag has coefficient 15 (taskwarrior.nix)
+      # so it reliably floats to the top.
+      DESC=$(task rc.verbose=nothing export 2>/dev/null \
+        | jq -r '[.[] | select(.status=="pending")] | sort_by(-.urgency) | .[0].description // empty' \
+        2>/dev/null)
+
+      if [[ -z "$DESC" ]]; then
+        sketchybar --set "$NAME" drawing=off
+        exit 0
+      fi
+
+      # Truncate at 35 chars to keep the bar compact.
+      if (( ''${#DESC} > 35 )); then DESC="''${DESC:0:33}…"; fi
+
+      sketchybar --set "$NAME" drawing=on label="$DESC" label.color=0xffa6e3a1
+    '';
+  };
+
+  xdg.configFile."sketchybar/plugins/timew_day.sh" = {
+    executable = true;
+    text = ''
+      #!/usr/bin/env bash
+      # Total time tracked today, including the currently-running interval.
+      # Pipes `timew export :day` JSON into python3 via stdin to avoid
+      # subprocess PATH issues -- timew is on the wrapped sketchybar PATH,
+      # but python3's subprocess would only see the system PATH.
+      # Active intervals have no "end" key; substitute utcnow() for those.
+      TOTAL=$(timew export :day 2>/dev/null | /usr/bin/python3 -c "
+      import json, sys
+      from datetime import datetime, timezone
+
+      data = sys.stdin.read().strip()
+      intervals = json.loads(data) if data else []
+      now = datetime.now(timezone.utc)
+      total = 0
+      for i in intervals:
+          try:
+              fmt = '%Y%m%dT%H%M%SZ'
+              start = datetime.strptime(i['start'], fmt).replace(tzinfo=timezone.utc)
+              end = datetime.strptime(i['end'], fmt).replace(tzinfo=timezone.utc) if 'end' in i else now
+              total += (end - start).total_seconds()
+          except Exception:
+              pass
+      secs = int(total)
+      h = secs // 3600
+      m = (secs % 3600) // 60
+      print(f'{h}h{m:02d}m' if h else f'{m}m' if m else "")
+      " 2>/dev/null)
+
+      if [[ -z "$TOTAL" ]]; then
+        sketchybar --set "$NAME" drawing=off
+        exit 0
+      fi
+
+      sketchybar --set "$NAME" drawing=on label="∑ $TOTAL" label.color=0xff89dceb
+    '';
+  };
+
+  xdg.configFile."sketchybar/plugins/kube_ctx.sh" = {
+    executable = true;
+    text = ''
+      #!/usr/bin/env bash
+      # Show active kubectl context. Hidden when unconfigured or when on the
+      # local colima cluster (colima / colima-default / colima-<profile>).
+      CTX=$(kubectl config current-context 2>/dev/null)
+
+      if [[ -z "$CTX" ]] || [[ "$CTX" == colima* ]]; then
+        sketchybar --set "$NAME" drawing=off
+        exit 0
+      fi
+
+      sketchybar --set "$NAME" drawing=on label="⎈ $CTX" label.color=0xffcba6f7
     '';
   };
 
