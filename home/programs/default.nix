@@ -1,6 +1,6 @@
 {
   imports = [
-    # Tier 0 — already-configured core
+    # Configured modules — CLI/TUI tools with declarative settings
     ./atuin.nix
     ./bat.nix
     ./colima.nix
@@ -19,8 +19,6 @@
     ./ssh.nix
     ./starship.nix
     ./zsh.nix
-
-    # Tier B — quality-of-life with working defaults
     ./aliae.nix
     ./broot.nix
     ./btop.nix
@@ -45,27 +43,6 @@
     ./yt-dlp.nix
     ./tz.nix
     ./zk.nix
-
-    # Tier A — user-data-dependent active modules
-    # (productivity OS, k8s clusters, etc -- need imperative setup outside Nix)
-    ./aerospace.nix
-    ./hammerspoon.nix
-    ./karabiner.nix
-    ./k9s.nix
-    ./kind.nix
-    ./sketchybar.nix
-
-    # Tier C — specialised active modules
-    ./notifications.nix
-    ./taskwarrior.nix
-    ./vscode.nix
-
-    # Stubs — commented-out skeletons awaiting first activation.
-    # Each file lives under ./stubs and ships a TODO + config template.
-    # See docs/stubs.md for the per-tool blocker list.
-    ./stubs
-
-    # Tier 1 — high-QoL shell/files/dev configs for already-enabled tools
     ./aria2.nix
     ./difftastic.nix
     ./fd.nix
@@ -84,26 +61,36 @@
     ./translate-shell.nix
     ./ttyper.nix
     ./zoxide.nix
+    ./awscli.nix
+    ./gh.nix
+    ./glab.nix
+    ./presenterm.nix
+    ./runme.nix
 
-    # Tier 2 — AI clients (auth via env vars / sops, not nix store)
+    # Active user-data modules — need out-of-Nix setup (permissions, clusters, auth)
+    ./aerospace.nix
+    ./hammerspoon.nix
+    ./karabiner.nix
+    ./k9s.nix
+    ./kind.nix
+    ./sketchybar.nix
+    ./notifications.nix
+    ./taskwarrior.nix
+    ./vscode.nix
+
+    # Stubs — config templates awaiting first activation; see docs/stubs.md
+    ./stubs
+
+    # Layered modules — program enabled at system level, settings owned here
     ./aichat.nix
     ./claude-code.nix
     ./fabric-ai.nix
     ./opencode.nix
-
-    # Tier 3 — desktop GUI apps (mostly enable-only on darwin)
     ./brave.nix
     ./dbeaver.nix
     ./freetube.nix
     ./joplin-desktop.nix
     ./obsidian.nix
     ./sioyek.nix
-
-    # Tier 4 — system packages with HM modules layered on top
-    ./awscli.nix
-    ./gh.nix
-    ./glab.nix
-    ./presenterm.nix
-    ./runme.nix
   ];
 }

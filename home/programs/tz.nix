@@ -2,8 +2,7 @@
 # Run with -w to refresh every minute; -m for 24h format.
 # Note: tz 0.8.0 renamed the zone field from `tz` to `id` (docs lag the binary).
 # Note: New Jersey = America/New_York (same EST/EDT as New York), no separate entry.
-_:
-{
+_: {
   xdg.configFile."tz/conf.toml".text = ''
     [[zones]]
     name = "Bengaluru"
