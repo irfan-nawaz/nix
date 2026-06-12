@@ -25,6 +25,28 @@
       push.autoSetupRemote = true;
       merge.conflictStyle = "diff3";
       gpg.ssh.allowedSignersFile = "~/.config/git/allowed_signers";
+
+      # delta: pager for all diffs (git diff, git log -p, git show).
+      # Replaces diff-so-fancy; matches lazygit's pager so both entry
+      # points render identically. Nord theme syncs with bat.nix.
+      core.pager = "delta";
+      interactive.diffFilter = "delta --color-only";
+      delta = {
+        navigate = true;
+        "side-by-side" = true;
+        "syntax-theme" = "Nord";
+        "line-numbers" = true;
+      };
+
+      # difttastic: structural/AST-aware diff via `git difftool`.
+      # Keeps `git diff` on delta (fast unified diff) while making
+      # `git difttool` available for when line diffs are too noisy
+      # (e.g. large Nix/Terraform refactors, JSON reshuffles).
+      diff.tool = "difttastic";
+      difftool = {
+        prompt = false;
+        difttastic.cmd = ''difft "$LOCAL" "$REMOTE"'';
+      };
     };
 
     # hasconfig: patterns are matched with wildmatch + WM_PATHNAME, so
