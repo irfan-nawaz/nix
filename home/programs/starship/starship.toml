@@ -2,7 +2,7 @@ add_newline = true
 palette = "catppuccin_mocha"
 
 format = "$directory$git_branch$git_status$nodejs$python$nix_shell$line_break$character"
-right_format = "$cmd_duration"
+right_format = "$kubernetes$cmd_duration"
 
 [directory]
 truncation_length = 3
@@ -33,6 +33,16 @@ error_symbol = "[❯](bold red)"
 format = "via [$symbol$state( ($name))]($style) "
 symbol = "❄️ "
 style = "bold blue"
+
+[kubernetes]
+format = "[$symbol$context( \\($namespace\\))]($style) "
+symbol = "⎈ "
+style = "bold mauve"
+disabled = false
+
+[[kubernetes.contexts]]
+context_pattern = "colima.*"
+disabled = true
 
 [palettes.catppuccin_mocha]
 rosewater = "#f5e0dc"

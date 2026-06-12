@@ -113,18 +113,24 @@ let
   };
 
   k8s = {
-    k = "kubectl";
+    # kubecolor wraps kubectl with status-aware colours (green/red/yellow).
+    # All kubectl invocations go through it so output is consistently coloured.
+    k = "kubecolor";
+    kubectl = "kubecolor";
 
-    kgp = "kubectl get pods";
-    kgs = "kubectl get svc";
-    kgd = "kubectl get deployments";
-    kgn = "kubectl get nodes";
+    kgp = "kubecolor get pods";
+    kgs = "kubecolor get svc";
+    kgd = "kubecolor get deployments";
+    kgn = "kubecolor get nodes";
 
     kaf = "kubectl apply -f";
     kdf = "kubectl delete -f";
 
     kl = "kubectl logs -f";
     ke = "kubectl exec -it";
+
+    # kubectl-neat: strip managedFields noise from -o yaml output.
+    ky = "kubectl get -o yaml | kubectl neat";
 
     kctx = "kubectx";
     kns = "kubens";
@@ -147,6 +153,13 @@ let
     tfd = "terraform destroy";
 
     tffmt = "terraform fmt -recursive";
+
+    # checkov: scan current directory for IaC security issues.
+    ck = "checkov -d .";
+
+    # aws-vault: exec into a role's STS session. Usage: ave <profile> <cmd>
+    ave = "aws-vault exec";
+    avl = "aws-vault list";
   };
 
   nix = {

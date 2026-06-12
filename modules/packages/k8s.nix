@@ -3,7 +3,10 @@
   environment.systemPackages = with pkgs; [
     # Core Kubernetes
     kubectl
-    kubernetes-helm
+    kubecolor # color-codes kubectl output by resource status (green/red/yellow)
+    kubectl-neat # `kubectl get -o yaml | kubectl neat` strips managed-field noise
+    # helm wrapped with diff plugin: `helm diff upgrade` shows k8s delta before apply
+    (wrapHelm kubernetes-helm { plugins = [ kubernetes-helmPlugins.helm-diff ]; })
     kustomize
     kubectx
     stern

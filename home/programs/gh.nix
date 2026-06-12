@@ -26,4 +26,29 @@
     };
     gitCredentialHelper.enable = false;
   };
+
+  # gh + fzf workflows. Shell functions rather than aliases because they
+  # use pipes, awk, and xargs -- plain aliases can't span multiple commands.
+  programs.zsh.initContent = ''
+    # Fuzzy PR checkout: list open PRs, pick with fzf, checkout.
+    ghpr() {
+      local pr
+      pr=$(gh pr list --limit 50 | fzf --preview 'gh pr view {1}' | awk '{print $1}')
+      [[ -n "$pr" ]] && gh pr checkout "$pr"
+    }
+
+    # Fuzzy issue view: list open issues assigned to me, pick with fzf, open in browser.
+    ghis() {
+      local issue
+      issue=$(gh issue list --assignee @me --limit 50 | fzf | awk '{print $1}')
+      [[ -n "$issue" ]] && gh issue view "$issue" --web
+    }
+
+    # Fuzzy branch checkout via gh (includes remote branches as PRs).
+    ghco() {
+      local branch
+      branch=$(git branch -a | fzf | sed 's|remotes/origin/||' | tr -d ' ')
+      [[ -n "$branch" ]] && git checkout "$branch"
+    }
+  '';
 }

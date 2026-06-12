@@ -47,6 +47,14 @@
         prompt = false;
         difttastic.cmd = ''difft "$LOCAL" "$REMOTE"'';
       };
+
+      # git-cliff: generate/preview CHANGELOG from conventional commits.
+      # `git changelog`       → write CHANGELOG.md for all history
+      # `git changelog-since` → unreleased commits only (preview before tag)
+      aliases = {
+        changelog = "!git-cliff -o CHANGELOG.md";
+        changelog-since = "!git-cliff --unreleased";
+      };
     };
 
     # hasconfig: patterns are matched with wildmatch + WM_PATHNAME, so
