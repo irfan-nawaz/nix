@@ -118,7 +118,7 @@ let
   karabinerJson = {
     global = {
       check_for_updates_on_startup = false;
-      show_in_menu_bar = true;
+      show_in_menu_bar = false;
       show_profile_name_in_menu_bar = false;
     };
     profiles = [

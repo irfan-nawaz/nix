@@ -29,6 +29,7 @@ _: {
     -- ─── Base settings ───────────────────────────────────────────────
     hs.window.animationDuration = 0   -- instant window ops, no easing
     hs.console.darkMode(true)         -- console matches the system theme
+    hs.menuIcon(false)                -- keep menu bar clean; reach HS via leader or Spotlight
 
     local hyper = { "cmd", "ctrl", "alt", "shift" }
 

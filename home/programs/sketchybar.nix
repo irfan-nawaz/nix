@@ -5,7 +5,7 @@
 # Bar layout:
 #   left:  workspace pills 1..9 (subscribed to aerospace_workspace_change,
 #          which aerospace.nix triggers via exec-on-workspace-change)
-#   right: task-count, timew tracker, clock, battery
+#   right: task_count, timew tracker, uair (clock + battery in macOS native)
 #
 # Plugins live next to the rc as xdg.configFile entries (no extra dirs,
 # all paths declarative). External CLIs the plugins need (aerospace,
@@ -104,21 +104,8 @@
 
       # ─── Right side ────────────────────────────────────────────────
       # Items added to "right" stack right-to-left in declaration order,
-      # so visual order on the bar will be:
-      #   [task] [timew]   [clock]   [battery]
-      sketchybar --add item battery right \
-                 --subscribe battery system_woke power_source_change \
-                 --set battery update_freq=60 \
-                       script="$PLUGIN_DIR/battery.sh"
-
-      # Clock label must be set via `sketchybar --set` -- sketchybar does
-      # NOT capture a script's stdout as the label, so a bare `date ...`
-      # only prints to the launchd log and the bar stays empty. Wrap the
-      # date call in an explicit set on $NAME instead.
-      sketchybar --add item clock right \
-                 --set clock update_freq=10 \
-                       script="sketchybar --set \$NAME label=\"\$(date '+%a %b %d  %H:%M')\""
-
+      # so visual order on the bar will be: [task] [timew] [uair]
+      # Clock and battery are in macOS native top-right (no duplication).
       sketchybar --add item timew right \
                  --subscribe timew timew_update \
                  --set timew update_freq=30 \
@@ -270,24 +257,4 @@
     '';
   };
 
-  xdg.configFile."sketchybar/plugins/battery.sh" = {
-    executable = true;
-    text = ''
-      #!/usr/bin/env bash
-      # pmset is the macOS canonical source; no nerd-font deps -- plain
-      # text label. Turns red below 20% on battery.
-      PCT=$(pmset -g batt | grep -Eo '[0-9]+%' | head -1 | tr -d '%')
-      STATE=$(pmset -g batt | grep -Eo 'charging|discharging|charged|AC attached' | head -1)
-
-      if [[ "$STATE" == "charging" || "$STATE" == "AC attached" || "$STATE" == "charged" ]]; then
-        PREFIX="+"
-        COLOR=0xffa6e3a1
-      else
-        PREFIX=""
-        if (( PCT <= 20 )); then COLOR=0xfff38ba8; else COLOR=0xffcdd6f4; fi
-      fi
-
-      sketchybar --set "$NAME" label="''${PREFIX}''${PCT}%" label.color="$COLOR"
-    '';
-  };
 }
