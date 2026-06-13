@@ -86,6 +86,9 @@ let
 
     # git security / audits
     leaks = "gitleaks detect";
+
+    # git-absorb: auto-rewrite staged hunks into the right fixup commit.
+    absorb = "git absorb";
   };
 
   docker = {
@@ -141,6 +144,14 @@ let
 
     kind-up = "kind create cluster --config ~/.config/kind/cluster.yaml";
     kind-down = "kind delete cluster";
+
+    # helmfile: declarative multi-chart Helm management.
+    hf = "helmfile";
+    hfs = "helmfile sync";
+    hfd = "helmfile diff";
+
+    # krew: kubectl plugin manager.
+    krew = "kubectl krew";
   };
 
   iac = {
@@ -156,6 +167,13 @@ let
 
     # checkov: scan current directory for IaC security issues.
     ck = "checkov -d .";
+
+    # opentofu: open-source Terraform fork; mirrors tf/tg pattern.
+    tofu = "tofu";
+    toi = "tofu init";
+    top = "tofu plan";
+    toa = "tofu apply";
+    tod = "tofu destroy";
 
     # aws-vault: exec into a role's STS session. Usage: ave <profile> <cmd>
     ave = "aws-vault exec";
@@ -200,6 +218,9 @@ let
     semscan = "semgrep scan";
 
     trivyfs = "trivy fs .";
+
+    # grype: CVE scan; pairs with syft. `syft . | grype` for full SBOM+CVE report.
+    vulnscan = "grype";
   };
 
   http = {

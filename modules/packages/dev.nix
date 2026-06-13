@@ -36,5 +36,15 @@
 
       # tmux session manager — active development
       sesh
-    ]);
+    ])
+    ++ [
+      # Git workflow
+      git-absorb # `git absorb` auto-rewrites staged hunks into the right fixup commit
+
+      # Local CI
+      act # run GitHub Actions locally: `act push` fires your CI workflow without pushing
+
+      # Local AI inference
+      ollama # serves Llama/Mistral/Gemma locally; `ollama run llama3` on first use
+    ];
 }

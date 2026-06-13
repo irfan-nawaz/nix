@@ -18,6 +18,11 @@
 
     # Cluster debugging
     kube-score
+    kubeconform # validates K8s manifests against JSON schemas (replaces deprecated kubeval)
+
+    # Helm ecosystem
+    helmfile # declarative multi-chart Helm management; `helmfile sync` applies releases atomically
+    krew # kubectl plugin manager; `kubectl krew install <plugin>` adds plugins ad-hoc
 
     # Containers & OCI tooling
     skopeo

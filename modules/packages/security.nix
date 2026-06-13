@@ -16,7 +16,8 @@
 
     # Scanners
     trivy
-    syft
+    syft # generates SBOMs; pair with grype for CVE scanning
+    grype # CVE vulnerability scanner; `syft . | grype` gives full report for any dir
     semgrep
     gitleaks
     mkcert
