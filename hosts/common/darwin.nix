@@ -219,6 +219,12 @@
   ];
   programs.nix-index.enable = true;
 
+  # Tailscale: WireGuard mesh across all devices. The binary lives in
+  # modules/packages/network.nix; the service registers the system daemon
+  # and tucks the socket under /var/run/tailscale. After first rebuild,
+  # run `tailscale up` on each machine to authenticate and join the tailnet.
+  services.tailscale.enable = true;
+
   fonts.packages = with pkgs; [
     nerd-fonts.jetbrains-mono
     nerd-fonts.fira-code
