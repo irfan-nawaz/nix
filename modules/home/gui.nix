@@ -11,13 +11,15 @@ in
   options.mySystem.home.gui.enable = lib.mkEnableOption "Heavyweight desktop / GUI programs";
 
   config = lib.mkIf cfg.enable {
-    programs.brave.enable = true;
-    programs.dbeaver.enable = true;
-    programs.freetube.enable = true;
-    programs.joplin-desktop.enable = true;
-    programs.obsidian.enable = true;
-    programs.sioyek.enable = true;
-    programs.vscode.enable = true;
+    programs = {
+      brave.enable = true;
+      dbeaver.enable = true;
+      freetube.enable = true;
+      joplin-desktop.enable = true;
+      obsidian.enable = true;
+      sioyek.enable = true;
+      vscode.enable = true;
+    };
 
     # macOS GUI casks installed via home-manager (no home-manager program
     # module exists for these). Gated behind gui.enable so a leaner

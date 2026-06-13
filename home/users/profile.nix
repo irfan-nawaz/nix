@@ -5,12 +5,18 @@
 #
 # Per-user shims (home/users/<username>.nix) only set home.username,
 # home.homeDirectory, and any one-off overrides.
-{ hostname, lib, ... }:
+{
+  hostname,
+  lib,
+  inputs,
+  ...
+}:
 {
   imports = [
     ../common
     ../programs
     ../../modules/home
+    inputs.nix-index-database.hmModules.nix-index
   ];
 
   mySystem.home = {
@@ -19,6 +25,10 @@
     desktop-mac.enable = lib.mkDefault true;
     ai.enable = lib.mkDefault true;
   };
+
+  # Use the pre-built nix-index database (shipped by the flake input);
+  # no manual `nix-index` run needed. comma enables `, <cmd>` ad-hoc runner.
+  programs.nix-index-database.comma.enable = true;
 
   home.sessionVariables.GITHUB_TOKEN_FILE = "/run/secrets/github_token";
 

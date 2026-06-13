@@ -217,7 +217,9 @@
     nix-output-monitor
     nvd
   ];
-  programs.nix-index.enable = true;
+  # nix-index database is now shipped by the nix-index-database flake input
+  # and wired via the HM module in home/users/profile.nix — no system-level
+  # enable needed here.
 
   # Tailscale: WireGuard mesh across all devices. The binary lives in
   # modules/packages/network.nix; the service registers the system daemon

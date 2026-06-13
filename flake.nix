@@ -27,6 +27,16 @@
 
     treefmt-nix.url = "github:numtide/treefmt-nix";
     treefmt-nix.inputs.nixpkgs.follows = "nixpkgs-darwin";
+
+    # Pre-built nix-index database updated daily — avoids the 30-min
+    # manual `nix-index` run; also enables the `,` ad-hoc runner.
+    nix-index-database.url = "github:nix-community/nix-index-database";
+    nix-index-database.inputs.nixpkgs.follows = "nixpkgs-darwin";
+
+    # Pre-commit hooks wired into the devShell via shellHook; enforces
+    # nixfmt + statix + deadnix automatically on every `git commit`.
+    git-hooks.url = "github:cachix/git-hooks.nix";
+    git-hooks.inputs.nixpkgs.follows = "nixpkgs-darwin";
   };
 
   outputs =
@@ -34,12 +44,31 @@
       self,
       nixpkgs,
       treefmt-nix,
+      git-hooks,
       ...
     }:
     let
       lib = import ./lib { inherit inputs; };
       forAllSystems = nixpkgs.lib.genAttrs [ "aarch64-darwin" ];
       treefmtFor = system: treefmt-nix.lib.evalModule nixpkgs.legacyPackages.${system} ./treefmt.nix;
+      hooksFor =
+        system:
+        let
+          pkgs = nixpkgs.legacyPackages.${system};
+        in
+        git-hooks.lib.${system}.run {
+          src = ./.;
+          hooks = {
+            nixfmt-rfc-style.enable = true;
+            statix = {
+              enable = true;
+              # Pass statix.toml via a nix store path so the hook finds it
+              # regardless of where pre-commit is invoked from.
+              entry = nixpkgs.lib.mkForce "${pkgs.statix}/bin/statix check --config ${./statix.toml}";
+            };
+            deadnix.enable = true;
+          };
+        };
     in
     {
       darwinConfigurations = {
@@ -77,20 +106,25 @@
         system:
         let
           pkgs = nixpkgs.legacyPackages.${system};
+          hooks = hooksFor system;
         in
         {
           default = pkgs.mkShell {
             name = "nix-platform";
-            packages = with pkgs; [
-              sops
-              age
-              just
-              nh
-              nixfmt
-              statix
-              deadnix
-              git
-            ];
+            inherit (hooks) shellHook;
+            packages =
+              with pkgs;
+              [
+                sops
+                age
+                just
+                nh
+                nixfmt
+                statix
+                deadnix
+                git
+              ]
+              ++ hooks.enabledPackages;
           };
         }
       );
@@ -99,6 +133,7 @@
         shaikmdirfannawaz = self.darwinConfigurations.shaikmdirfannawaz.system;
         irfan-personal = self.darwinConfigurations.irfan-personal.system;
         formatting = (treefmtFor system).config.build.check self;
+        pre-commit = hooksFor system;
       });
     };
 }

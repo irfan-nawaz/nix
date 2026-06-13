@@ -1,0 +1,7 @@
+# statix lint configuration.
+# repeated_keys (W20) fires on dot-notation paths like `foo.bar = x; foo.baz = y;`
+# and suggests grouping them. Both styles are valid Nix; this project uses
+# dot-notation intentionally in several places (aerospace mode bindings,
+# home-manager module args, sketchybar plugin blocks) where it aids readability.
+# All other checks remain active — this only suppresses the style preference.
+disabled = ["repeated_keys"]
