@@ -171,7 +171,7 @@ let
     # opentofu: open-source Terraform fork; mirrors tf/tg pattern.
     tofu = "tofu";
     toi = "tofu init";
-    top = "tofu plan";
+    tofp = "tofu plan"; # `top` is taken by modernReplacements (btop)
     toa = "tofu apply";
     tod = "tofu destroy";
 
