@@ -29,10 +29,7 @@ _: {
             name = "dolphin3:8b";
             max_input_tokens = 131072;
           }
-          {
-            name = "dolphin3:70b";
-            max_input_tokens = 131072;
-          }
+          # dolphin3:70b added in home/users/irfan-personal.nix — needs 40 GB RAM
         ];
       }
     ];

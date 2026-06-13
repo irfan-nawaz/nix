@@ -271,7 +271,7 @@ let
     # `personal` requires one-time setup: `ollama pull dolphin3:8b && ollama create personal -f ~/.config/ollama/Modelfile.personal`
     personal = "ollama run personal";
     lm = "ollama run dolphin3:8b";
-    lm70 = "ollama run dolphin3:70b";
+    # lm70 lives in home/users/irfan-personal.nix — 70b needs 40 GB RAM (48 GB machine only)
     lmls = "ollama list";
     lmps = "ollama ps";
 

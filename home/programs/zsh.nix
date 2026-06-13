@@ -22,7 +22,7 @@
 
     # Multi-step LLM shell functions — too stateful for aliases.
     # Require ollama running + llm-ollama plugin (both wired automatically after rebuild).
-    initExtra = ''
+    initContent = ''
       # Summarise a file or stdin with the local model: `lms file.txt` or `cmd | lms`
       lms() { cat "''${1:--}" | ${pkgs.llm}/bin/llm -m ollama/personal "summarise this concisely"; }
 
