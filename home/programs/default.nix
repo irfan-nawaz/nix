@@ -82,6 +82,7 @@
     ./stubs
 
     # Layered modules — program enabled at system level, settings owned here
+    ./ollama.nix
     ./aichat.nix
     ./claude-code.nix
     ./fabric-ai.nix

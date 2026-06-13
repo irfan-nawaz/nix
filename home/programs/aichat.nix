@@ -13,5 +13,28 @@ _: {
     wrap = "auto";
     highlight = true;
     light_theme = false;
+    # Local ollama endpoint — enables `aichat -m ollama:personal` and `aichat -m ollama:dolphin3:8b`.
+    # Run `ollama serve` first; models must be pulled via `ollama pull <name>`.
+    clients = [
+      {
+        type = "openai-compatible";
+        name = "ollama";
+        api_base = "http://localhost:11434/v1";
+        models = [
+          {
+            name = "personal";
+            max_input_tokens = 131072;
+          }
+          {
+            name = "dolphin3:8b";
+            max_input_tokens = 131072;
+          }
+          {
+            name = "dolphin3:70b";
+            max_input_tokens = 131072;
+          }
+        ];
+      }
+    ];
   };
 }

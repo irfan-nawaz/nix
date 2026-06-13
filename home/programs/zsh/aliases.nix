@@ -266,6 +266,23 @@ let
     fabric = "fabric";
     op = "opencode";
     cc = "claude";
+
+    # Local uncensored model via ollama (dolphin3 — no content filtering).
+    # `personal` requires one-time setup: `ollama pull dolphin3:8b && ollama create personal -f ~/.config/ollama/Modelfile.personal`
+    personal = "ollama run personal";
+    lm = "ollama run dolphin3:8b";
+    lm70 = "ollama run dolphin3:70b";
+    lmls = "ollama list";
+    lmps = "ollama ps";
+
+    # aichat routed to local model — same interface as cloud but runs offline.
+    aiol = "aichat -m ollama:personal";
+
+    # oterm: polished TUI for ollama with conversation history + model switching.
+    ot = "oterm";
+
+    # llm: Simon Willison's composable CLI — e.g. `git diff | llm "write commit message"`
+    lc = "llm chat";
   };
 
   bench = {

@@ -46,5 +46,7 @@
 
       # Local AI inference
       ollama # serves Llama/Mistral/Gemma locally; `ollama run llama3` on first use
+      oterm # polished TUI for ollama — conversation history, model switching, saved sessions
+      llm # Simon Willison's CLI LLM client; composable in pipelines: `git diff | llm "..."`
     ];
 }
