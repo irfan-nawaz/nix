@@ -25,6 +25,10 @@
     # Disk usage
     gdu
     dust
+    duf # modern df alternative; aliased as `df`
+
+    # YAML / JSON processing
+    yq-go # mikefarah/yq; -o=json and -P flags used by yaml2json/json2yaml aliases
 
     # CLI personal knowledge management
     nb

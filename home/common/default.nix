@@ -23,7 +23,7 @@
   };
 
   home.sessionVariables = {
-    EDITOR = "nvim";
+    # EDITOR / VISUAL set by programs.neovim.defaultEditor = true in neovim.nix.
     PAGER = "less";
   };
 

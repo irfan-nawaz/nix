@@ -24,6 +24,7 @@
     nload
     cariddi
     rustscan
+    gping # graphical ping with latency graph; aliased as `pingg`
     httpie
     xh
     ngrok
