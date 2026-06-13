@@ -4,7 +4,7 @@
 # secret instead of pinning them here.
 _: {
   programs.aichat.settings = {
-    model = "claude:claude-sonnet-4-5";
+    model = "claude:claude-sonnet-4-6";
     temperature = 0.7;
     save = true;
     save_session = true;

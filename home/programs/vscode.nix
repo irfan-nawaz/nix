@@ -84,6 +84,9 @@ in
 
       # Quality of life
       streetsidesoftware.code-spell-checker
+
+      # Local LLM IDE integration — auto-discovers ollama at localhost:11434
+      continue.continue
     ];
     profiles.default.userSettings = editorSettings;
   };

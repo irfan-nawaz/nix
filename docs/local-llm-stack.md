@@ -95,7 +95,7 @@ Ollama is the server layer. It:
 - Handles quantization, Metal acceleration, and layer distribution automatically
 
 ```sh
-ollama serve          # start daemon (normally run in background or as a launchd agent)
+ollama serve          # start daemon manually (normally auto-started by the launchd agent on login)
 ollama list           # show downloaded models (alias: lmls)
 ollama ps             # show currently loaded models and RAM usage (alias: lmps)
 ollama pull <model>   # download a model
@@ -292,9 +292,9 @@ Models are too large to manage via Nix (gigabytes per model, frequently
 updated). These steps run once per machine after `darwin-rebuild switch`:
 
 ```sh
-# 1. Start the ollama daemon
-#    (will eventually be a launchd service; for now run manually or in background)
-ollama serve &
+# 1. Run darwin-rebuild switch
+#    The launchd agent starts `ollama serve` automatically on login —
+#    no manual `ollama serve` needed now or after reboots.
 
 # 2. Pull the base model (~5 GB)
 ollama pull dolphin3:8b
@@ -313,11 +313,10 @@ personal "explain how a CPU branch predictor works in detail"
 # Optional: pull the 70b model for deep sessions
 # (close browser, Slack, and other heavy apps first)
 ollama pull dolphin3:70b
-
-# Optional: install llm's ollama plugin for pipeline use
-llm install llm-ollama
-llm models                  # verify ollama models appear
 ```
+
+The `llm-ollama` plugin is installed automatically by the home-manager activation
+script on every rebuild — no manual `llm install llm-ollama` needed.
 
 ### Re-creating the persona after Modelfile changes
 

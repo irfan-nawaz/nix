@@ -227,6 +227,20 @@
   # run `tailscale up` on each machine to authenticate and join the tailnet.
   services.tailscale.enable = true;
 
+  # Ollama: local LLM inference daemon. nix-darwin has no native services.ollama
+  # module (that lives in NixOS only), so we wire it as a launchd user agent.
+  # The binary comes from modules/packages/dev.nix; the agent keeps it running
+  # at localhost:11434 without any manual `ollama serve` after reboot.
+  launchd.user.agents.ollama = {
+    command = "${pkgs.ollama}/bin/ollama serve";
+    serviceConfig = {
+      RunAtLoad = true;
+      KeepAlive = true;
+      StandardOutPath = "/tmp/ollama.log";
+      StandardErrorPath = "/tmp/ollama.log";
+    };
+  };
+
   fonts.packages = with pkgs; [
     nerd-fonts.jetbrains-mono
     nerd-fonts.fira-code
