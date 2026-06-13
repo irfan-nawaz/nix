@@ -44,6 +44,8 @@
       export GREEN=0xffa6e3a1
       export SKY=0xff89dceb
       export MAUVE=0xffcba6f7
+      export YELLOW=0xfff9e2af
+      export PEACH=0xfffab387
 
       PLUGIN_DIR="$HOME/.config/sketchybar/plugins"
 
@@ -115,8 +117,18 @@
       # Clock and battery are in macOS native top-right (no duplication).
 
       # System stats — rightmost group, adjacent to native clock.
+      # Declaration order = rightmost first; ram_graph is closest to clock.
       # cpu.sh blocks ~1s on `top -l 2 -s 1` to get an instantaneous sample.
       # network.sh runs once per 5s interval and pushes to both net graphs.
+      sketchybar --add graph ram_graph right \
+                 --set ram_graph \
+                       update_freq=5 \
+                       graph.color=$YELLOW \
+                       graph.fill_color=0x20f9e2af \
+                       width=50 \
+                       label.padding_left=4 \
+                       script="$PLUGIN_DIR/ram.sh"
+
       sketchybar --add graph cpu_graph right \
                  --set cpu_graph \
                        update_freq=5 \
@@ -213,10 +225,10 @@
         #!/usr/bin/env bash
         case "$MODE" in
           wm)
-            sketchybar --set "$NAME" drawing=on label="WM" label.color=0xfffab387
+            sketchybar --set "$NAME" drawing=on label="WM" label.color=$PEACH
             ;;
           service)
-            sketchybar --set "$NAME" drawing=on label="SVC" label.color=0xfff38ba8
+            sketchybar --set "$NAME" drawing=on label="SVC" label.color=$RED
             ;;
           *)
             sketchybar --set "$NAME" drawing=off
@@ -273,7 +285,7 @@
         if (( H > 0 )); then ETXT="''${H}h''${M}m"; else ETXT="''${M}m"; fi
 
         LABEL="''${TAG:+$TAG · }''${ETXT}"
-        sketchybar --set "$NAME" drawing=on label="$LABEL" label.color=0xfff9e2af
+        sketchybar --set "$NAME" drawing=on label="$LABEL" label.color=$YELLOW
       '';
     };
 
@@ -373,6 +385,29 @@
     };
 
     # ─── System stat plugins ─────────────────────────────────────────
+    "sketchybar/plugins/ram.sh" = {
+      executable = true;
+      text = ''
+        #!/usr/bin/env bash
+        # RSS memory: active + wired + compressor pages, normalised to total RAM.
+        # vm_stat gives page counts; sysctl gives page size and total bytes.
+        PAGE=$(sysctl -n hw.pagesize)
+        TOTAL=$(sysctl -n hw.memsize)
+        read -r ACTIVE WIRED COMPRESSED <<< "$(vm_stat | awk '
+          /^Pages active:/                 { gsub(/\./,"",$NF); a=$NF }
+          /^Pages wired down:/             { gsub(/\./,"",$NF); w=$NF }
+          /^Pages occupied by compressor:/ { gsub(/\./,"",$NF); c=$NF }
+          END { print a+0, w+0, c+0 }')"
+        USED=$(( (ACTIVE + WIRED + COMPRESSED) * PAGE ))
+        PCT=$(awk "BEGIN {printf \"%.0f\", ''${USED}*100/''${TOTAL}}")
+        (( PCT > 100 )) && PCT=100
+        FRAC=$(awk "BEGIN {printf \"%.2f\", ''${PCT}/100}")
+        USED_GB=$(awk "BEGIN {printf \"%.1f\", ''${USED}/1073741824}")
+        sketchybar --push ram_graph "$FRAC" \
+                   --set  ram_graph label="''${USED_GB}G"
+      '';
+    };
+
     "sketchybar/plugins/cpu.sh" = {
       executable = true;
       text = ''
