@@ -57,9 +57,13 @@ Nix source files:
 | File | What it manages |
 |---|---|
 | `modules/packages/dev.nix` | `ollama`, `oterm`, `llm` binaries |
-| `home/programs/ollama.nix` | Modelfile for `personal` persona at `~/.config/ollama/Modelfile.personal` |
-| `home/programs/aichat.nix` | ollama openai-compatible client block |
-| `home/programs/zsh/aliases.nix` | `personal`, `lm`, `lm70`, `ot`, `aiol`, `lc`, `lmls`, `lmps` |
+| `hosts/common/darwin.nix` | launchd user agent — auto-starts `ollama serve` on login |
+| `home/programs/ollama.nix` | Modelfile for `personal` persona; auto-installs `llm-ollama` plugin |
+| `home/programs/aichat.nix` | ollama client block (`personal`, `dolphin3:8b`) |
+| `home/programs/vscode.nix` | `continue.continue` extension — in-editor local LLM chat |
+| `home/programs/zsh/aliases.nix` | `personal`, `lm`, `ot`, `aiol`, `lc`, `lmls`, `lmps` |
+| `home/programs/zsh.nix` | `lms`, `gcai`, `explain` shell functions |
+| `home/users/irfan-personal.nix` | `lm70` alias + `dolphin3:70b` aichat client (48 GB machine only) |
 
 ---
 
@@ -169,7 +173,7 @@ The simplest interface. Drops into a readline REPL immediately.
 ```sh
 personal                    # chat with dolphin3:8b + custom persona (alias)
 lm "one-shot question"      # alias for `ollama run dolphin3:8b`
-lm70                        # alias for `ollama run dolphin3:70b`
+lm70                        # alias for `ollama run dolphin3:70b` (irfan-personal only — needs 40 GB RAM)
 ollama run mistral          # run any model directly
 ```
 
@@ -201,9 +205,9 @@ openai-compatible client. This lets you use the same `aichat` interface for
 both cloud and local models:
 
 ```sh
-aichat "question"                       # default: claude-sonnet-4-5 (cloud)
+aichat "question"                       # default: claude-sonnet-4-6 (cloud)
 aiol "question"                         # alias: aichat -m ollama:personal (local)
-aichat -m ollama:dolphin3:70b "..."     # explicit local 70b
+aichat -m ollama:dolphin3:70b "..."     # explicit local 70b (irfan-personal only)
 aichat -m claude:claude-opus-4-7 "..."  # explicit cloud model
 ```
 
@@ -214,14 +218,11 @@ but need to flip between cloud and local.
 
 **Binary**: `llm` — installed via `modules/packages/dev.nix`. **Alias**: `lc` (llm chat).
 
-Simon Willison's `llm` is designed for shell pipeline integration. Configure
-the ollama plugin to connect it to your local models:
+Simon Willison's `llm` is designed for shell pipeline integration. The `llm-ollama`
+plugin is installed automatically by the home-manager activation script — no manual
+setup needed.
 
 ```sh
-# One-time setup: install the ollama plugin
-llm install llm-ollama
-
-# Then use it
 llm -m ollama/personal "explain this"
 git diff | llm "write a conventional commit message for this diff"
 cat error.log | llm "what is causing this error and how do I fix it"
@@ -232,6 +233,24 @@ cat file.py | llm "find bugs in this code"
 Best for: shell workflows, piping output into the model, scripting,
 one-liner integrations. Pairs especially well with `fzf`, `bat`, and
 `ripgrep` pipelines.
+
+### Shell functions — multi-step LLM workflows
+
+Three functions are wired into zsh via `home/programs/zsh.nix`:
+
+```sh
+lms file.txt          # summarise a file with the local model
+cat build.log | lms   # or pipe any output into it
+
+gcai                  # generate a conventional commit message from staged diff
+                      # (runs after `git add`; prints the message for you to copy or edit)
+
+explain cargo build   # run a command and explain its output + any errors
+explain kubectl apply -f deploy.yaml
+```
+
+These use `llm -m ollama/personal` internally — `ollama` must be running and
+`dolphin3:8b` must be pulled for them to work.
 
 ---
 
@@ -264,13 +283,13 @@ personal "how does X work"
 echo "what is the capital of france" | llm -m ollama/personal
 
 # Summarise clipboard contents
-pbpaste | llm "summarise this in 3 bullet points"
+pbpaste | lms
 
-# Write a commit message from staged diff
-git diff --cached | llm "write a conventional commit message"
+# Write a commit message from staged diff (shell function)
+git add -p && gcai
 
-# Explain an error
-cargo build 2>&1 | llm "explain this error and suggest a fix"
+# Explain a command's output (shell function)
+explain cargo build
 
 # Open TUI for a longer research session
 ot
@@ -278,6 +297,9 @@ ot
 # Use cloud for complex coding, local for sensitive Q&A in same workflow
 aichat "design a postgres schema for X"      # cloud
 aiol "explain how Y exploit works"           # local, no restrictions
+
+# Deep session on personal machine (48 GB) only
+lm70                                         # dolphin3:70b — close other apps first
 
 # List what's downloaded and what's in memory
 lmls    # ollama list
@@ -295,8 +317,9 @@ updated). These steps run once per machine after `darwin-rebuild switch`:
 # 1. Run darwin-rebuild switch
 #    The launchd agent starts `ollama serve` automatically on login —
 #    no manual `ollama serve` needed now or after reboots.
+#    The llm-ollama plugin is also installed automatically during activation.
 
-# 2. Pull the base model (~5 GB)
+# 2. Pull the base model (~5 GB) — both machines
 ollama pull dolphin3:8b
 
 # 3. Bake the custom persona into a named model
@@ -310,13 +333,10 @@ ollama list
 # 5. Test
 personal "explain how a CPU branch predictor works in detail"
 
-# Optional: pull the 70b model for deep sessions
-# (close browser, Slack, and other heavy apps first)
+# irfan-personal (48 GB) only — optional, for deep sessions
+# Close browser, Slack, and other heavy apps first (~8 GB left for macOS)
 ollama pull dolphin3:70b
 ```
-
-The `llm-ollama` plugin is installed automatically by the home-manager activation
-script on every rebuild — no manual `llm install llm-ollama` needed.
 
 ### Re-creating the persona after Modelfile changes
 
@@ -335,13 +355,13 @@ parameters) is updated. This is instant.
 
 ## 9. Memory and RAM considerations
 
-| Scenario | RAM used | Notes |
-|---|---|---|
-| Ollama idle (no model loaded) | ~50 MB | Daemon only |
-| dolphin3:8b loaded | ~5 GB | Frees after ~5 min idle |
-| dolphin3:70b loaded | ~40 GB | Leaves ~8 GB for macOS; close heavy apps |
-| dolphin3:8b + browser + Slack | ~20 GB total | Comfortable |
-| dolphin3:70b + browser | ~48 GB | May page out; use dedicated sessions |
+| Scenario | RAM used | Machine | Notes |
+|---|---|---|---|
+| Ollama idle (no model loaded) | ~50 MB | Both | Daemon only; auto-started by launchd |
+| dolphin3:8b loaded | ~5 GB | Both | Frees after ~5 min idle |
+| dolphin3:8b + browser + Slack | ~20 GB total | Both | Comfortable on any modern Mac |
+| dolphin3:70b loaded | ~40 GB | irfan-personal only | Leaves ~8 GB for macOS; close heavy apps |
+| dolphin3:70b + browser | ~48 GB | irfan-personal only | May page out; use dedicated sessions |
 
 Models are stored on SSD permanently; RAM is used only while the model is
 active. Ollama automatically unloads models after a configurable idle timeout
@@ -362,16 +382,19 @@ Need uncensored answers with no refusals?
   → personal (alias) — dolphin3:8b with custom persona
 
 Need maximum answer quality (willing to close other apps)?
-  → lm70 — dolphin3:70b directly
+  → lm70 — dolphin3:70b directly  [irfan-personal only — 40 GB RAM]
 
 Need to pipe shell output into an LLM?
-  → llm + llm-ollama plugin  e.g. `git diff | llm "..."`
+  → lms / explain / gcai shell functions, or `cmd | llm -m ollama/personal "..."`
 
 Want a saved conversation you can return to?
   → ot (oterm TUI)
 
 Want to switch between cloud and local in the same tool?
   → aichat default (cloud) / aiol alias (local)
+
+Want in-editor LLM completions and chat?
+  → continue.dev sidebar in Cursor/VS Code — auto-discovers ollama
 
 Need current internet knowledge or real-time data?
   → aichat (Claude) or cc (Claude Code) — local models have a training cutoff
