@@ -111,7 +111,37 @@
       # ─── Right side ────────────────────────────────────────────────
       # Declaration order = rightmost first. Visual left→right:
       #   [kube_ctx] [next_task] [task_count] [timew_day] [uair] [timew]
+      #   [cpu_graph] [net_down_graph] [net_up_graph]  ← system stats (nearest clock)
       # Clock and battery are in macOS native top-right (no duplication).
+
+      # System stats — rightmost group, adjacent to native clock.
+      # cpu.sh blocks ~1s on `top -l 2 -s 1` to get an instantaneous sample.
+      # network.sh runs once per 5s interval and pushes to both net graphs.
+      sketchybar --add graph cpu_graph right \
+                 --set cpu_graph \
+                       update_freq=5 \
+                       graph.color=$SKY \
+                       graph.fill_color=0x2089dceb \
+                       width=50 \
+                       label.padding_left=4 \
+                       script="$PLUGIN_DIR/cpu.sh"
+
+      sketchybar --add graph net_down_graph right \
+                 --set net_down_graph \
+                       update_freq=5 \
+                       graph.color=$GREEN \
+                       graph.fill_color=0x20a6e3a1 \
+                       width=40 \
+                       label.padding_left=4 \
+                       script="$PLUGIN_DIR/network.sh"
+
+      sketchybar --add graph net_up_graph right \
+                 --set net_up_graph \
+                       graph.color=$MAUVE \
+                       graph.fill_color=0x20cba6f7 \
+                       width=40 \
+                       label.padding_left=4
+
       sketchybar --add item timew right \
                  --subscribe timew timew_update \
                  --set timew update_freq=30 \
@@ -339,6 +369,67 @@
         fi
 
         sketchybar --set "$NAME" drawing=on label="⎈ $CTX" label.color=0xffcba6f7
+      '';
+    };
+
+    # ─── System stat plugins ─────────────────────────────────────────
+    "sketchybar/plugins/cpu.sh" = {
+      executable = true;
+      text = ''
+        #!/usr/bin/env bash
+        # top -l 2 -n 0 -s 1: two samples 1 second apart so the second
+        # "CPU usage" line reflects current activity, not historical average.
+        PCT=$(top -l 2 -n 0 -s 1 \
+          | awk '/CPU usage/ {gsub("%","",$3); u=$3; gsub("%","",$5); s=$5; total=u+s}
+                 END {printf "%.0f", total}')
+        (( PCT > 100 )) && PCT=100
+        FRAC=$(awk "BEGIN {printf \"%.2f\", ''${PCT}/100}")
+        sketchybar --push cpu_graph "$FRAC" \
+                   --set  cpu_graph label="''${PCT}%"
+      '';
+    };
+
+    "sketchybar/plugins/network.sh" = {
+      executable = true;
+      text = ''
+        #!/usr/bin/env bash
+        # Compute en0 byte delta between 5-second polls; state in /tmp.
+        # Pushes to both net_down_graph and net_up_graph from one script
+        # to avoid running netstat twice per interval.
+        IFACE="en0"
+        INTERVAL=5
+        RX_NOW=$(netstat -ibn | awk -v i="$IFACE" '$1==i{print $7; exit}')
+        TX_NOW=$(netstat -ibn | awk -v i="$IFACE" '$1==i{print $10; exit}')
+        [[ -z "$RX_NOW" || -z "$TX_NOW" ]] && exit 0
+
+        RX_PREV=$(cat /tmp/sketchybar_net_rx 2>/dev/null)
+        TX_PREV=$(cat /tmp/sketchybar_net_tx 2>/dev/null)
+        echo "$RX_NOW" > /tmp/sketchybar_net_rx
+        echo "$TX_NOW" > /tmp/sketchybar_net_tx
+        [[ -z "$RX_PREV" || -z "$TX_PREV" ]] && exit 0
+
+        RX_DELTA=$(( RX_NOW - RX_PREV )); (( RX_DELTA < 0 )) && RX_DELTA=0
+        TX_DELTA=$(( TX_NOW - TX_PREV )); (( TX_DELTA < 0 )) && TX_DELTA=0
+        RX_BPS=$(( RX_DELTA / INTERVAL ))
+        TX_BPS=$(( TX_DELTA / INTERVAL ))
+
+        fmt() {
+          local b=$1
+          if   (( b >= 1048576 )); then awk "BEGIN {printf \"%.1fM\", $b/1048576}"
+          elif (( b >= 1024 ));    then awk "BEGIN {printf \"%.0fK\", $b/1024}"
+          else echo "''${b}B"; fi
+        }
+
+        RX_LBL=$(fmt "$RX_BPS")
+        TX_LBL=$(fmt "$TX_BPS")
+        MAX=10485760
+        RX_FRAC=$(awk "BEGIN {v=$RX_BPS/$MAX; print (v>1?1:(v<0?0:v))}")
+        TX_FRAC=$(awk "BEGIN {v=$TX_BPS/$MAX; print (v>1?1:(v<0?0:v))}")
+
+        sketchybar --push net_down_graph "$RX_FRAC" \
+                   --set  net_down_graph label="↓''${RX_LBL}" \
+                   --push net_up_graph   "$TX_FRAC" \
+                   --set  net_up_graph   label="↑''${TX_LBL}"
       '';
     };
 
